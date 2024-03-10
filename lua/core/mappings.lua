@@ -2,6 +2,23 @@
 
 local M = {}
 
+
+vim.lsp.buf.references = function()
+  local telescope = require('telescope.builtin')
+  telescope.lsp_references({
+    function()
+    local some = function()
+      -- local action_state = require('telescope.actions.state')
+      -- local actions = require('telescope.actions')
+
+      return true
+    end
+    some()
+    vim.cmd('normal! zz')
+    end
+  })
+end
+
 M.general = {
   i = {
     -- go to  beginning and end
@@ -196,7 +213,8 @@ M.lspconfig = {
 
     ["gr"] = {
       function()
-        vim.lsp.buf.references()
+        local telescope = require('telescope.builtin')
+        telescope.lsp_references()
       end,
       "LSP references",
     },
