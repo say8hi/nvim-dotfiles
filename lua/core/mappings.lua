@@ -71,6 +71,9 @@ M.general = {
     ["<leader>b"] = { "<cmd> enew <CR>", "New buffer" },
     ["<leader>ch"] = { "<cmd> NvCheatsheet <CR>", "Mapping cheatsheet" },
 
+    ["<C-d>"] = { "<C-d>zz", "Mapping cheatsheet" },
+    ["<C-u>"] = { "<C-u>zz", "Mapping cheatsheet" },
+
     ["<leader>fm"] = {
       function()
         vim.lsp.buf.format { async = true }
@@ -168,6 +171,8 @@ M.lspconfig = {
       end,
       "LSP definition",
     },
+
+    ["gd"] = { "gdzz" },
 
     ["K"] = {
       function()
