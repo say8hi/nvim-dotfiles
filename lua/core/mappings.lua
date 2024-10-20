@@ -225,7 +225,7 @@ M.lspconfig = {
 
     ["<leader>q"] = {
       function()
-        vim.diagnostic.setloclist()
+        require('telescope.builtin').diagnostics()
       end,
       "Diagnostic setloclist",
     },
