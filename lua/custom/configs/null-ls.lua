@@ -13,6 +13,9 @@ local opts = {
       return { "--python-executable", virtual .. "/bin/python3" }
       end,
     }),
+    null_ls.builtins.formatting.prettier.with({
+      filetypes = { "json", "javascript", "typescript", "html", "css", "yaml", "markdown" },
+        }),
   },
   on_attach = function(client, bufnr)
     if client.supports_method("textDocument/formatting") then

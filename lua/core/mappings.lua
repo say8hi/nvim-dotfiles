@@ -298,6 +298,8 @@ M.telescope = {
     ["<leader>th"] = { "<cmd> Telescope themes <CR>", "Nvchad themes" },
 
     ["<leader>ma"] = { "<cmd> Telescope marks <CR>", "telescope bookmarks" },
+
+      -- ["<leader>tg"] = { "<cmd> Telescope lazygit lazygit <CR>", "LazyGit Telescope" },
   },
 }
 

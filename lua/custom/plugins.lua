@@ -42,7 +42,7 @@ local plugins = {
   },
   {
     "nvimtools/none-ls.nvim",
-    ft = {"python", "go"},
+    ft = {"python", "go", "json"},
     opts = function()
       return require "custom.configs.null-ls"
     end,
@@ -56,7 +56,8 @@ local plugins = {
         "mypy",
         "ruff-lsp",
         "pyright",
-        "gopls"
+        "gopls",
+        "prettier"
       },
     },
   },
@@ -81,7 +82,23 @@ local plugins = {
     config = function ()
         require'alpha'.setup(require'alpha.themes.dashboard'.config)
     end
-};
+  },
+  {
+  "kdheepak/lazygit.nvim",
+  dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+  cmd = { "LazyGit" },
+  keys = {
+    { "<leader>gg", ":LazyGit <CR>", desc = "LazyGit" }
+  },
+  config = function()
+    vim.g.lazygit_floating_window_winblend = 0 -- transparency of floating window
+    vim.g.lazygit_floating_window_scaling_factor = 0.9
+    vim.g.lazygit_use_neovim_remote = 1
+  end
+  }
 
 }
 return plugins
