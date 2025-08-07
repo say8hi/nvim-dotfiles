@@ -1,252 +1,336 @@
--- All plugins have lazy=true by default,to load a plugin on startup just lazy=false
--- List of all default plugins & their definitions
-local default_plugins = {
-
-  "nvim-lua/plenary.nvim",
-
+return {
   {
-    "NvChad/base46",
-    branch = "v2.0",
-    build = function()
-      require("base46").load_all_highlights()
-    end,
+    "stevearc/conform.nvim",
+    -- event = 'BufWritePre', -- uncomment for format on save
+    opts = require "configs.conform",
   },
 
+  -- These are some examples, uncomment them if you want to see them work!
   {
-    "NvChad/ui",
-    branch = "v2.0",
-    lazy = false,
-  },
-
-  {
-    "zbirenbaum/nvterm",
-    init = function()
-      require("core.utils").load_mappings "nvterm"
+    "neovim/nvim-lspconfig",
+    config = function()
+      require "configs.lspconfig"
     end,
+  },
+  {
+    "nvim-neotest/nvim-nio",
+  },
+  {
+    "mfussenegger/nvim-dap",
+  },
+  {
+    "dreamsofcode-io/nvim-dap-go",
+    ft = "go",
+    dependencies = "mfussenegger/nvim-dap",
+  config = function(_, opts)
+        require("dap-go").setup(opts)
+      end
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+      "nvim-neotest/nvim-nio",
+    },
     config = function(_, opts)
-      require "base46.term"
-      require("nvterm").setup(opts)
+      local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(path)
+      require("core.utils").load_mappings("dap_python")
     end,
   },
-
   {
-    "NvChad/nvim-colorizer.lua",
-    event = "User FilePost",
-    config = function(_, opts)
-      require("colorizer").setup(opts)
-
-      -- execute colorizer as soon as possible
-      vim.defer_fn(function()
-        require("colorizer").attach_to_buffer(0)
-      end, 0)
-    end,
-  },
-
-  {
-    "nvim-tree/nvim-web-devicons",
+    "nvimtools/none-ls.nvim",
+    ft = {"go", "json"},
     opts = function()
-      return { override = require "nvchad.icons.devicons" }
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "devicons")
-      require("nvim-web-devicons").setup(opts)
+      return require "configs.null-ls"
     end,
   },
-
   {
-    "lukas-reineke/indent-blankline.nvim",
-    version = "2.20.7",
-    event = "User FilePost",
-    opts = function()
-      return require("plugins.configs.others").blankline
-    end,
-    config = function(_, opts)
-      require("core.utils").load_mappings "blankline"
-      dofile(vim.g.base46_cache .. "blankline")
-      require("indent_blankline").setup(opts)
+    "williamboman/mason.nvim",
+    opts = {
+      ensure_installed = {
+        "gopls",
+        "prettier",
+        "black",
+        "debugpy",
+        "ruff-lsp",
+        "pyright",
+      },
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      require "configs.lspconfig"
     end,
   },
-
+  {
+  "kdheepak/lazygit.nvim",
+  dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+  cmd = { "Lazygit" },
+  keys = {
+    { "<leader>gg", ":LazyGit <CR>", desc = "LazyGit" }
+  },
+  config = function()
+    vim.g.lazygit_floating_window_winblend = 0 -- transparency of floating window
+    vim.g.lazygit_floating_window_scaling_factor = 0.9
+    vim.g.lazygit_use_neovim_remote = 1
+  end
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     opts = function()
-      return require "plugins.configs.treesitter"
+      return require "nvchad.configs.treesitter"
     end,
     config = function(_, opts)
-      dofile(vim.g.base46_cache .. "syntax")
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
-
-  -- git stuff
   {
-    "lewis6991/gitsigns.nvim",
-    event = "User FilePost",
-    opts = function()
-      return require("plugins.configs.others").gitsigns
+    "olexsmir/gopher.nvim",
+    ft = "go",
+    config = function (_, opts)
+      require("gopher").setup(opts)
     end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "git")
-      require("gitsigns").setup(opts)
+    build = function ()
+      vim.cmd [[silent! GoInstallDeps]]
     end,
   },
-
-  -- lsp stuff
   {
-    "williamboman/mason.nvim",
-    cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
-    opts = function()
-      return require "plugins.configs.mason"
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "mason")
-      require("mason").setup(opts)
-
-      -- custom nvchad cmd to install all mason binaries listed
-      vim.api.nvim_create_user_command("MasonInstallAll", function()
-        if opts.ensure_installed and #opts.ensure_installed > 0 then
-          vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
-        end
-      end, {})
-
-      vim.g.mason_binaries_list = opts.ensure_installed
-    end,
-  },
-
-  {
-    "neovim/nvim-lspconfig",
-    event = "User FilePost",
+    "mbbill/undotree",
+    event = "VeryLazy",
     config = function()
-      require "plugins.configs.lspconfig"
+      vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<CR>", { desc = "Telescope Undo" })
     end,
   },
+{
+    "folke/noice.nvim",
+ event = "VeryLazy",
+    opts = {
+	lsp = {
+		progress = {
+			enabled = true,
+			format = "lsp_progress",
+			format_done = "lsp_progress_done",
+			throttle = 1000 / 60, -- frequency to update lsp progress message
+		},
+		override = {
+			-- override the default lsp markdown formatter with Noice
+			["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+			-- override the lsp markdown formatter with Noice
+			["vim.lsp.util.stylize_markdown"] = true,
+			-- override cmp documentation with Noice (needs the other options to work)
+			["cmp.entry.get_documentation"] = true,
+		},
+    signature = {
+      enabled = false,
+      auto_open = {
+        enabled = true,
+        trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
+        luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
+        throttle = 50, -- Debounce lsp signature help request by 50ms
+      },
+	},
+	presets = {
+		bottom_search = true,   -- use a classic bottom cmdline for search
+		-- command_palette = true, -- position the cmdline and popupmenu together
+		long_message_to_split = true, -- long messages will be sent to a split
+		inc_rename = true,      -- enables an input dialog for inc-rename.nvim
+		lsp_doc_border = false, -- add a border to hover docs and signature help
+	},
 
-  -- load luasnips + cmp related in insert mode only
-  {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
+      },
     dependencies = {
-      {
-        -- snippet plugin
-        "L3MON4D3/LuaSnip",
-        dependencies = "rafamadriz/friendly-snippets",
-        opts = { history = true, updateevents = "TextChanged,TextChangedI" },
-        config = function(_, opts)
-          require("plugins.configs.others").luasnip(opts)
-        end,
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+  },
+},
+  {
+    "RRethy/vim-illuminate",
+ event = "VeryLazy",
+    config = function()
+      require("illuminate").configure({
+    providers = {
+        'lsp',
+        'treesitter',
+        'regex',
+    },
+  })
+    end,
+  },
+  {
+    "kylechui/nvim-surround",
+  event = "VeryLazy",
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({})
+    end,
+  },
+{
+  "debugloop/telescope-undo.nvim",
+  dependencies = { -- note how they're inverted to above example
+    {
+      "nvim-telescope/telescope.nvim",
+      dependencies = { "nvim-lua/plenary.nvim" },
+    },
+  },
+  keys = {
+    { -- lazy style key map
+      "<leader>u",
+      "<cmd>Telescope undo<cr>",
+      desc = "undo history",
+    },
+  },
+  opts = {
+    -- don't use `defaults = { }` here, do this in the main telescope spec
+    extensions = {
+      undo = {
+        -- telescope-undo.nvim config, see below
       },
-
-      -- autopairing of (){}[] etc
-      {
-        "windwp/nvim-autopairs",
-        opts = {
-          fast_wrap = {},
-          disable_filetype = { "TelescopePrompt", "vim" },
+      -- no other extensions here, they can have their own spec too
+    },
+  },
+  config = function(_, opts)
+    -- Calling telescope's setup from multiple specs does not hurt, it will happily merge the
+    -- configs for us. We won't use data, as everything is in it's own namespace (telescope
+    -- defaults, as well as each extension).
+    require("telescope").setup(opts)
+    require("telescope").load_extension("undo")
+  end, event = "VeryLazy"
+},
+{ "mg979/vim-visual-multi", event = "VeryLazy",
+init = function ()
+  vim.g.VM_maps = {
+    ['Find Under'] = '<C-b>',
+    ['Find Subword Under'] = '<C-b>',
+  }
+end},
+{
+  "AckslD/nvim-neoclip.lua",
+  event = "VeryLazy",
+  dependencies = {
+    { "nvim-telescope/telescope.nvim" },
+  },
+  config = function()
+    require("neoclip").setup({
+      history = 1000,
+      enable_persistent_history = false,
+      length_limit = 1048576,
+      continuous_sync = false,
+      db_path = vim.fn.stdpath("data") .. "/databases/neoclip.sqlite3",
+      filter = nil,
+      preview = true,
+      prompt = nil,
+      default_register = '+',
+      default_register_macros = "q",
+      enable_macro_history = true,
+      content_spec_column = false,
+      disable_keycodes_parsing = false,
+      on_select = {
+        move_to_front = false,
+        close_telescope = true,
+      },
+      on_paste = {
+        set_reg = false,
+        move_to_front = false,
+        close_telescope = true,
+      },
+      on_replay = {
+        set_reg = false,
+        move_to_front = false,
+        close_telescope = true,
+      },
+      on_custom_action = {
+        close_telescope = true,
+      },
+      keys = {
+        telescope = {
+          i = {
+            select = "<cr>",
+            paste = "<c-j>",
+            paste_behind = "<c-k>",
+            replay = "<c-q>", -- replay a macro
+            delete = "<c-d>", -- delete an entry
+            edit = "<c-e>", -- edit an entry
+            custom = {},
+          },
+          n = {
+            select = "<cr>",
+            paste = "p",
+            --- It is possible to map to more than one key.
+            -- paste = { 'p', '<c-p>' },
+            paste_behind = "P",
+            replay = "q",
+            delete = "d",
+            edit = "e",
+            custom = {},
+          },
         },
-        config = function(_, opts)
-          require("nvim-autopairs").setup(opts)
-
-          -- setup cmp for autopairs
-          local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-        end,
       },
+    })
 
-      -- cmp sources plugins
-      {
-        "saadparwaiz1/cmp_luasnip",
-        "hrsh7th/cmp-nvim-lua",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-      },
-    },
-    opts = function()
-      return require "plugins.configs.cmp"
-    end,
-    config = function(_, opts)
-      require("cmp").setup(opts)
-    end,
-  },
+    vim.keymap.set("n", "<leader>o", "<cmd>Telescope neoclip<CR>", { desc = "Telescope Neoclip" })
+  end,
+},
+{
+  "ThePrimeagen/harpoon",
+  event = "VeryLazy",
+  config = function()
+    local mark = require("harpoon.mark")
+    local ui = require("harpoon.ui")
 
-  {
-    "numToStr/Comment.nvim",
-    keys = {
-      { "gcc", mode = "n", desc = "Comment toggle current line" },
-      { "gc", mode = { "n", "o" }, desc = "Comment toggle linewise" },
-      { "gc", mode = "x", desc = "Comment toggle linewise (visual)" },
-      { "gbc", mode = "n", desc = "Comment toggle current block" },
-      { "gb", mode = { "n", "o" }, desc = "Comment toggle blockwise" },
-      { "gb", mode = "x", desc = "Comment toggle blockwise (visual)" },
-    },
-    init = function()
-      require("core.utils").load_mappings "comment"
-    end,
-    config = function(_, opts)
-      require("Comment").setup(opts)
-    end,
-  },
+    vim.keymap.set("n", "<leader>a", mark.add_file, { desc = "Harpoon: Mark File" })
+    vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu, { desc = "Toggle Harpoon Menu" })
 
-  -- file managing , picker etc
-  {
-    "nvim-tree/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-    init = function()
-      require("core.utils").load_mappings "nvimtree"
-    end,
-    opts = function()
-      return require "plugins.configs.nvimtree"
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "nvimtree")
-      require("nvim-tree").setup(opts)
-    end,
-  },
+  end,
+},
+-- {
+--   "nvim-treesitter/nvim-treesitter-textobjects",
+--   dependencies = { "nvim-treesitter/nvim-treesitter" },
+--   config = function()
+--     require("nvim-treesitter.configs").setup {
+--       textobjects = {
+--         move = {
+--           enable = true,
+--           set_jumps = true,
+--           goto_next_start = {
+--             ["]f"] = "@function.outer",
+--           },
+--           goto_next_end = {
+--             ["]F"] = "@function.outer",
+--           },
+--           goto_previous_start = {
+--             ["[f"] = "@function.outer",
+--           },
+--           goto_previous_end = {
+--             ["[F"] = "@function.outer",
+--           },
+--         },
+--       },
+--     }
+--   end
+-- }
 
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    cmd = "Telescope",
-    init = function()
-      require("core.utils").load_mappings "telescope"
-    end,
-    opts = function()
-      return require "plugins.configs.telescope"
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "telescope")
-      local telescope = require "telescope"
-      telescope.setup(opts)
+  -- test new blink
+  -- { import = "nvchad.blink.lazyspec" },
 
-      -- load extensions
-      for _, ext in ipairs(opts.extensions_list) do
-        telescope.load_extension(ext)
-      end
-    end,
-  },
-
-  -- Only load whichkey after all the gui
-  {
-    "folke/which-key.nvim",
-    keys = { "<leader>", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
-    init = function()
-      require("core.utils").load_mappings "whichkey"
-    end,
-    cmd = "WhichKey",
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "whichkey")
-      require("which-key").setup(opts)
-    end,
-  },
+  -- {
+  -- 	"nvim-treesitter/nvim-treesitter",
+  -- 	opts = {
+  -- 		ensure_installed = {
+  -- 			"vim", "lua", "vimdoc",
+  --      "html", "css"
+  -- 		},
+  -- 	},
+  -- },
 }
-
-local config = require("core.utils").load_config()
-
-if #config.plugins > 0 then
-  table.insert(default_plugins, { import = config.plugins })
-end
-
-require("lazy").setup(default_plugins, config.lazy_nvim)
