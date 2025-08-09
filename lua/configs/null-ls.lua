@@ -8,9 +8,10 @@ local opts = {
       args = { "-rm-unused" }
     }),
     null_ls.builtins.formatting.golines,
-    null_ls.builtins.formatting.black,
+    require("none-ls.formatting.ruff").with({"--extend-select", "I"}),
+    require("none-ls.formatting.ruff_format"),
     null_ls.builtins.formatting.prettier.with({
-      filetypes = { "json", "javascript", "typescript", "html", "css", "yaml", "markdown" },
+      filetypes = { "json", "yaml", "markdown" },
         }),
   },
   on_attach = function(client, bufnr)

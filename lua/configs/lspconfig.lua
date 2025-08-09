@@ -41,22 +41,51 @@ codelenses = {
   }
 }
 
--- PYRIGHT
-lspconfig.pyright.setup {
-  filetypes = {"python"},
-  on_attach = on_attach,
+-- RUFF LSP
+lspconfig.ruff.setup {
+  filetypes = { "python" },
+  on_attach = function(client, bufnr)
+    client.server_capabilities.hoverProvider = false
+    client.server_capabilities.completionProvider = false
+    on_attach(client, bufnr)
+  end,
   capabilities = capabilities,
 }
 
--- RUFF LSP
-lspconfig.ruff.setup {
-  filetypes = {"python"},
+-- PYRIGHT
+lspconfig.pyright.setup {
+  filetypes = { "python" },
   on_attach = on_attach,
   capabilities = capabilities,
-  init_options = {
-    settings = {
-      args = {},
-    }
-  }
+  settings = {
+    pyright = {
+      disableOrganizeImports = true,
+    },
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = "workspace",
+        typeCheckingMode = "basic",
+        inlayHints = {
+          variableTypes = true,
+          functionReturnTypes = true,
+          callArgumentNames = true,
+          parameterNames = true,
+        },
+        diagnosticSeverityOverrides = {
+          reportUnusedImport = "warning",
+          reportUnusedVariable = "warning",
+          reportDuplicateImport = "warning",
+          reportPrivateUsage = "none",
+          reportUnknownVariableType = "none",
+          reportMissingTypeStubs = "none",
+        },
+        extraPaths = {},
+        venvPath = ".",
+        venv = ".venv",
+      },
+    },
+  },
 }
 -- read :h vim.lsp.config for changing options of lsp servers 

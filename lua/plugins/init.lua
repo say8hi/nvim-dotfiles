@@ -31,18 +31,20 @@ return {
     ft = "python",
     dependencies = {
       "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
       "nvim-neotest/nvim-nio",
     },
     config = function(_, opts)
       local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
       require("dap-python").setup(path)
-      require("core.utils").load_mappings("dap_python")
     end,
   },
   {
     "nvimtools/none-ls.nvim",
-    ft = {"go", "json"},
+  dependencies = {
+    'nvimtools/none-ls-extras.nvim',
+    'jayp0521/mason-null-ls.nvim',
+  },
+    ft = {"go", "json", "python"},
     opts = function()
       return require "configs.null-ls"
     end,
@@ -53,9 +55,8 @@ return {
       ensure_installed = {
         "gopls",
         "prettier",
-        "black",
         "debugpy",
-        "ruff-lsp",
+        "ruff",
         "pyright",
       },
     },
@@ -294,43 +295,19 @@ end},
 
   end,
 },
--- {
---   "nvim-treesitter/nvim-treesitter-textobjects",
---   dependencies = { "nvim-treesitter/nvim-treesitter" },
---   config = function()
---     require("nvim-treesitter.configs").setup {
---       textobjects = {
---         move = {
---           enable = true,
---           set_jumps = true,
---           goto_next_start = {
---             ["]f"] = "@function.outer",
---           },
---           goto_next_end = {
---             ["]F"] = "@function.outer",
---           },
---           goto_previous_start = {
---             ["[f"] = "@function.outer",
---           },
---           goto_previous_end = {
---             ["[F"] = "@function.outer",
---           },
---         },
---       },
---     }
---   end
--- }
+{
+  "linux-cultist/venv-selector.nvim",
+  dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim" },
+  config = function()
+    require("venv-selector").setup({
+      -- Auto select venv when entering python files
+      auto_refresh = true,
+    })
+  end,
+  keys = {
+    { "<leader>vs", "<cmd>VenvSelect<cr>" },
+    { "<leader>vc", "<cmd>VenvSelectCached<cr>" },
+  },
+},
 
-  -- test new blink
-  -- { import = "nvchad.blink.lazyspec" },
-
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
 }
