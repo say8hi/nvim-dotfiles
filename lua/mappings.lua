@@ -75,7 +75,6 @@ map("n", "<leader>dus",
 
 map("n", "dn", "<cmd> DapStepOver <CR>", { desc = "DAP Next step" })
 map("n", "<leader>dc", function() require('dap').continue() end, { desc = "Debug" })
-map("n", "<leader>dc", function() require('dap').continue() end, { desc = "Debug" })
 
 map("n", "n", "nzzzv", { desc = "centered move to the next find" })
 map("n", "N", "Nzzzv", { desc = "centered move to the next find" })
@@ -84,15 +83,52 @@ map("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", { 
 
 map("n", "<leader>ds", '<cmd>Telescope diagnostics<CR>', { desc = "LSP diagnostic loclist" })
 
-
-
 -- Visual
 map("v", "<S-down>", ":m '>+1<CR>gv=gv", { desc = "move selected down" })
 map("v", "<S-up>", ":m '<-2<CR>gv=gv", { desc = "move selected up" })
 
 map("v", "p", "\"_dP", { desc = "paste without copying" })
 map("v", "c", "\"_c", { desc = "c without copying" })
--- map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
--- map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 
--- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+-- Undotree
+map("n", "<leader>u", "<cmd>Telescope undo<CR>", { desc = "Telescope Undo" })
+
+-- LazyGit
+map("n", "<leader>gg", ":LazyGit <CR>", { desc = "LazyGit" })
+
+-- Vim Visual Multi
+vim.g.VM_maps = {
+  ['Find Under'] = '<C-b>',
+  ['Find Subword Under'] = '<C-b>',
+}
+
+-- Neoclip
+map("n", "<leader>o", "<cmd>Telescope neoclip<CR>", { desc = "Telescope Neoclip" })
+
+-- Harpoon
+map("n", "<leader>ta", function() require("harpoon.mark").add_file() end, { desc = "Harpoon: Mark File" })
+map("n", "<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, { desc = "Toggle Harpoon Menu" })
+
+-- Venv Selector
+map("n", "<leader>vs", "<cmd>VenvSelect<cr>", { desc = "Select Python venv" })
+map("n", "<leader>vc", "<cmd>VenvSelectCached<cr>", { desc = "Select cached Python venv" })
+
+-- Claude Code
+map("n", "<leader>ac", "<cmd>ClaudeCode<cr>", { desc = "Toggle Claude" })
+map("n", "<leader>af", "<cmd>ClaudeCodeFocus<cr>", { desc = "Focus Claude" })
+map("n", "<leader>ar", "<cmd>ClaudeCode --resume<cr>", { desc = "Resume Claude" })
+map("n", "<leader>aC", "<cmd>ClaudeCode --continue<cr>", { desc = "Continue Claude" })
+map("n", "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", { desc = "Select Claude model" })
+map("n", "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Add current buffer" })
+map("v", "<leader>as", "<cmd>ClaudeCodeSend<cr>", { desc = "Send to Claude" })
+map("n", "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", { desc = "Accept diff" })
+map("n", "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Deny diff" })
+
+-- Diffview
+map("n", "<leader>dv", "<cmd>DiffviewOpen<cr>", { desc = "Open Diffview" })
+map("n", "<leader>dx", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
+
+-- Todo Comments
+map("n", "]t", function() require("todo-comments").jump_next() end, { desc = "Next todo comment" })
+map("n", "[t", function() require("todo-comments").jump_prev() end, { desc = "Previous todo comment" })
+map("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })

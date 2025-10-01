@@ -78,9 +78,6 @@ return {
       "nvim-telescope/telescope.nvim",
     },
   cmd = { "Lazygit" },
-  keys = {
-    { "<leader>gg", ":LazyGit <CR>", desc = "LazyGit" }
-  },
   config = function()
     vim.g.lazygit_floating_window_winblend = 0 -- transparency of floating window
     vim.g.lazygit_floating_window_scaling_factor = 0.9
@@ -112,9 +109,6 @@ return {
   {
     "mbbill/undotree",
     event = "VeryLazy",
-    config = function()
-      vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<CR>", { desc = "Telescope Undo" })
-    end,
   },
 {
     "folke/noice.nvim",
@@ -213,13 +207,7 @@ return {
     require("telescope").load_extension("undo")
   end, event = "VeryLazy"
 },
-{ "mg979/vim-visual-multi", event = "VeryLazy",
-init = function ()
-  vim.g.VM_maps = {
-    ['Find Under'] = '<C-b>',
-    ['Find Subword Under'] = '<C-b>',
-  }
-end},
+{ "mg979/vim-visual-multi", event = "VeryLazy" },
 {
   "AckslD/nvim-neoclip.lua",
   event = "VeryLazy",
@@ -283,21 +271,11 @@ end},
         },
       },
     })
-
-    vim.keymap.set("n", "<leader>o", "<cmd>Telescope neoclip<CR>", { desc = "Telescope Neoclip" })
   end,
 },
 {
   "ThePrimeagen/harpoon",
   event = "VeryLazy",
-  config = function()
-    local mark = require("harpoon.mark")
-    local ui = require("harpoon.ui")
-
-    vim.keymap.set("n", "<leader>a", mark.add_file, { desc = "Harpoon: Mark File" })
-    vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu, { desc = "Toggle Harpoon Menu" })
-
-  end,
 },
 {
   "linux-cultist/venv-selector.nvim",
@@ -308,10 +286,39 @@ end},
       auto_refresh = true,
     })
   end,
-  keys = {
-    { "<leader>vs", "<cmd>VenvSelect<cr>" },
-    { "<leader>vc", "<cmd>VenvSelectCached<cr>" },
+},
+{
+  "coder/claudecode.nvim",
+  dependencies = { "folke/snacks.nvim" },
+  config = true,
+},
+{
+  "sindrets/diffview.nvim",
+  cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+  config = true,
+},
+{
+  "nvim-telescope/telescope-fzf-native.nvim",
+  build = "make",
+  config = function()
+    require("telescope").load_extension("fzf")
+  end,
+},
+{
+  "hrsh7th/nvim-cmp",
+  opts = function()
+    return require("configs.cmp")
+  end,
+  dependencies = {
+    "lukas-reineke/cmp-under-comparator",
   },
 },
-
+{
+  "folke/todo-comments.nvim",
+  dependencies = { "nvim-lua/plenary.nvim" },
+  event = "VeryLazy",
+  config = function()
+    require("todo-comments").setup()
+  end,
+}
 }
