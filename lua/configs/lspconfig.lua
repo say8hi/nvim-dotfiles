@@ -1,14 +1,10 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local servers = { "html", "cssls" }
-vim.lsp.enable(servers)
-
-
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require("lspconfig")
-local util = require "lspconfig/util"
+local util = require "lspconfig.util"
 
 -- GOPLS
 lspconfig.gopls.setup {
@@ -88,4 +84,29 @@ lspconfig.pyright.setup {
     },
   },
 }
+
+-- JSON
+lspconfig.jsonls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
+-- TypeScript/JavaScript 
+lspconfig.tsserver.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
+-- HTML (уберите из строки local servers = { "html", "cssls" })
+lspconfig.html.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
+-- CSS (уберите из строки local servers = { "html", "cssls" })
+lspconfig.cssls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
 -- read :h vim.lsp.config for changing options of lsp servers 

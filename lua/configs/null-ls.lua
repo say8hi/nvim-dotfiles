@@ -3,16 +3,24 @@ local null_ls = require('null-ls')
 
 local opts = {
   sources = {
+    -- Go
     null_ls.builtins.formatting.gofumpt,
     null_ls.builtins.formatting.goimports_reviser.with({
       args = { "-rm-unused" }
     }),
     null_ls.builtins.formatting.golines,
+    -- Python
     require("none-ls.formatting.ruff").with({"--extend-select", "I"}),
     require("none-ls.formatting.ruff_format"),
+    -- Web
     null_ls.builtins.formatting.prettier.with({
-      filetypes = { "json", "yaml", "markdown" },
-        }),
+      filetypes = {
+        "javascript", "javascriptreact",
+        "typescript", "typescriptreact",
+        "json", "html", "css", "scss",
+        "yaml", "markdown"
+      },
+    }),
   },
   on_attach = function(client, bufnr)
     if client.supports_method("textDocument/formatting") then

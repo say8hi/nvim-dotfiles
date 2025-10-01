@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
+    event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -38,17 +38,17 @@ return {
       require("dap-python").setup(path)
     end,
   },
-  {
-    "nvimtools/none-ls.nvim",
-  dependencies = {
-    'nvimtools/none-ls-extras.nvim',
-    'jayp0521/mason-null-ls.nvim',
-  },
-    ft = {"go", "json", "python"},
-    opts = function()
-      return require "configs.null-ls"
-    end,
-  },
+  -- {
+  --   "nvimtools/none-ls.nvim",
+  -- dependencies = {
+  --   'nvimtools/none-ls-extras.nvim',
+  --   'jayp0521/mason-null-ls.nvim',
+  -- },
+  --   ft = {"go", "json", "python"},
+  --   opts = function()
+  --     return require "configs.null-ls"
+  --   end,
+  -- },
   {
     "williamboman/mason.nvim",
     opts = {
@@ -58,6 +58,10 @@ return {
         "debugpy",
         "ruff",
         "pyright",
+        "html-lsp",
+        "css-lsp",
+        "typescript-language-server",
+        "json-lsp",
       },
     },
   },
