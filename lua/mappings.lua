@@ -43,10 +43,8 @@ map("n", "gh", function()
 end, { desc = "Show information about the symbol under the cursor" })
 
 
-map("n", "<leader>gj", ":GoTagAdd json<CR>", { desc = "Add JSON tags" })
-
-
-map("n", "ga", ":GoIfErr<CR>", { desc = "if err != nil {}" })
+map("n", "<leader>gj", "<cmd>GoTagAdd json<CR>", { desc = "Add JSON tags" })
+map("n", "ga", "<cmd>GoIfErr<CR>", { desc = "if err != nil {}" })
 
 -- Debug
 map("n", "<leader>dgt",
@@ -93,9 +91,6 @@ map("v", "c", "\"_c", { desc = "c without copying" })
 -- Undotree
 map("n", "<leader>u", "<cmd>Telescope undo<CR>", { desc = "Telescope Undo" })
 
--- LazyGit
-map("n", "<leader>gg", ":LazyGit <CR>", { desc = "LazyGit" })
-
 -- Vim Visual Multi
 vim.g.VM_maps = {
   ['Find Under'] = '<C-b>',
@@ -108,25 +103,6 @@ map("n", "<leader>o", "<cmd>Telescope neoclip<CR>", { desc = "Telescope Neoclip"
 -- Harpoon
 map("n", "<leader>ta", function() require("harpoon.mark").add_file() end, { desc = "Harpoon: Mark File" })
 map("n", "<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, { desc = "Toggle Harpoon Menu" })
-
--- Venv Selector
-map("n", "<leader>vs", "<cmd>VenvSelect<cr>", { desc = "Select Python venv" })
-map("n", "<leader>vc", "<cmd>VenvSelectCached<cr>", { desc = "Select cached Python venv" })
-
--- Claude Code
-map("n", "<leader>ac", "<cmd>ClaudeCode<cr>", { desc = "Toggle Claude" })
-map("n", "<leader>af", "<cmd>ClaudeCodeFocus<cr>", { desc = "Focus Claude" })
-map("n", "<leader>ar", "<cmd>ClaudeCode --resume<cr>", { desc = "Resume Claude" })
-map("n", "<leader>aC", "<cmd>ClaudeCode --continue<cr>", { desc = "Continue Claude" })
-map("n", "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", { desc = "Select Claude model" })
-map("n", "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Add current buffer" })
-map("v", "<leader>as", "<cmd>ClaudeCodeSend<cr>", { desc = "Send to Claude" })
-map("n", "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", { desc = "Accept diff" })
-map("n", "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Deny diff" })
-
--- Diffview
-map("n", "<leader>dv", "<cmd>DiffviewOpen<cr>", { desc = "Open Diffview" })
-map("n", "<leader>dx", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
 
 -- Todo Comments
 map("n", "]t", function() require("todo-comments").jump_next() end, { desc = "Next todo comment" })

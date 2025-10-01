@@ -91,8 +91,8 @@ lspconfig.jsonls.setup {
   capabilities = capabilities,
 }
 
--- TypeScript/JavaScript 
-lspconfig.tsserver.setup {
+-- TypeScript/JavaScript
+lspconfig.ts_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }

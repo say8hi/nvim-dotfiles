@@ -5,7 +5,6 @@ return {
     opts = require "configs.conform",
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -22,9 +21,9 @@ return {
     "dreamsofcode-io/nvim-dap-go",
     ft = "go",
     dependencies = "mfussenegger/nvim-dap",
-  config = function(_, opts)
-        require("dap-go").setup(opts)
-      end
+    config = function(_, opts)
+      require("dap-go").setup(opts)
+    end
   },
   {
     "mfussenegger/nvim-dap-python",
@@ -38,17 +37,16 @@ return {
       require("dap-python").setup(path)
     end,
   },
-  -- {
-  --   "nvimtools/none-ls.nvim",
-  -- dependencies = {
-  --   'nvimtools/none-ls-extras.nvim',
-  --   'jayp0521/mason-null-ls.nvim',
-  -- },
-  --   ft = {"go", "json", "python"},
-  --   opts = function()
-  --     return require "configs.null-ls"
-  --   end,
-  -- },
+  {
+    "rcarriga/nvim-dap-ui",
+    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+    keys = {
+      { "<leader>du", function() require("dapui").toggle() end, desc = "Toggle DAP UI" },
+    },
+    config = function()
+      require("dapui").setup()
+    end,
+  },
   {
     "williamboman/mason.nvim",
     opts = {
@@ -62,27 +60,27 @@ return {
         "css-lsp",
         "typescript-language-server",
         "json-lsp",
+        "stylua",
+        "gofumpt",
+        "black",
       },
     },
   },
   {
-    "neovim/nvim-lspconfig",
-    config = function()
-      require "configs.lspconfig"
-    end,
-  },
-  {
-  "kdheepak/lazygit.nvim",
-  dependencies = {
+    "kdheepak/lazygit.nvim",
+    dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",
     },
-  cmd = { "Lazygit" },
-  config = function()
-    vim.g.lazygit_floating_window_winblend = 0 -- transparency of floating window
-    vim.g.lazygit_floating_window_scaling_factor = 0.9
-    vim.g.lazygit_use_neovim_remote = 1
-  end
+    cmd = { "Lazygit" },
+    keys = {
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
+    config = function()
+      vim.g.lazygit_floating_window_winblend = 0
+      vim.g.lazygit_floating_window_scaling_factor = 0.9
+      vim.g.lazygit_use_neovim_remote = 1
+    end
   },
   {
     "nvim-treesitter/nvim-treesitter",
@@ -112,47 +110,42 @@ return {
   },
 {
     "folke/noice.nvim",
- event = "VeryLazy",
+    event = "VeryLazy",
     opts = {
-	lsp = {
-		progress = {
-			enabled = true,
-			format = "lsp_progress",
-			format_done = "lsp_progress_done",
-			throttle = 1000 / 60, -- frequency to update lsp progress message
-		},
-		override = {
-			-- override the default lsp markdown formatter with Noice
-			["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-			-- override the lsp markdown formatter with Noice
-			["vim.lsp.util.stylize_markdown"] = true,
-			-- override cmp documentation with Noice (needs the other options to work)
-			["cmp.entry.get_documentation"] = true,
-		},
-    signature = {
-      enabled = false,
-      auto_open = {
-        enabled = true,
-        trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
-        luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
-        throttle = 50, -- Debounce lsp signature help request by 50ms
+      lsp = {
+        progress = {
+          enabled = true,
+          format = "lsp_progress",
+          format_done = "lsp_progress_done",
+          throttle = 1000 / 60,
+        },
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
+        },
+        signature = {
+          enabled = false,
+          auto_open = {
+            enabled = true,
+            trigger = true,
+            luasnip = true,
+            throttle = 50,
+          },
+        },
       },
-	},
-	presets = {
-		bottom_search = true,   -- use a classic bottom cmdline for search
-		-- command_palette = true, -- position the cmdline and popupmenu together
-		long_message_to_split = true, -- long messages will be sent to a split
-		inc_rename = true,      -- enables an input dialog for inc-rename.nvim
-		lsp_doc_border = false, -- add a border to hover docs and signature help
-	},
-
+      presets = {
+        bottom_search = true,
+        long_message_to_split = true,
+        inc_rename = true,
+        lsp_doc_border = false,
       },
+    },
     dependencies = {
       "MunifTanjim/nui.nvim",
       "rcarriga/nvim-notify",
     },
   },
-},
   {
     "RRethy/vim-illuminate",
  event = "VeryLazy",
@@ -168,7 +161,6 @@ return {
   },
   {
     "kylechui/nvim-surround",
-  event = "VeryLazy",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
     config = function()
@@ -278,28 +270,43 @@ return {
   event = "VeryLazy",
 },
 {
-  "linux-cultist/venv-selector.nvim",
-  dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim" },
-  config = function()
-    require("venv-selector").setup({
-      -- Auto select venv when entering python files
-      auto_refresh = true,
-    })
-  end,
-},
-{
   "coder/claudecode.nvim",
   dependencies = { "folke/snacks.nvim" },
+  cmd = {
+    "ClaudeCode",
+    "ClaudeCodeFocus",
+    "ClaudeCodeSelectModel",
+    "ClaudeCodeAdd",
+    "ClaudeCodeSend",
+    "ClaudeCodeDiffAccept",
+    "ClaudeCodeDiffDeny",
+  },
+  keys = {
+    { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+    { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+    { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+    { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+    { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+    { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+    { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+    { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+    { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+  },
   config = true,
 },
 {
   "sindrets/diffview.nvim",
   cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+  keys = {
+    { "<leader>dv", "<cmd>DiffviewOpen<cr>", desc = "Open Diffview" },
+    { "<leader>dx", "<cmd>DiffviewClose<cr>", desc = "Close Diffview" },
+  },
   config = true,
 },
 {
   "nvim-telescope/telescope-fzf-native.nvim",
   build = "make",
+  event = "VeryLazy",
   config = function()
     require("telescope").load_extension("fzf")
   end,
@@ -320,5 +327,65 @@ return {
   config = function()
     require("todo-comments").setup()
   end,
-}
+},
+{
+  "windwp/nvim-autopairs",
+  event = "InsertEnter",
+  config = function()
+    require("nvim-autopairs").setup({
+      check_ts = true,
+      ts_config = {
+        lua = { "string" },
+        javascript = { "template_string" },
+      },
+    })
+    local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+    local cmp = require("cmp")
+    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+  end,
+},
+{
+  "lewis6991/gitsigns.nvim",
+  event = "BufReadPre",
+  config = function()
+    require("gitsigns").setup({
+      signs = {
+        add = { text = "│" },
+        change = { text = "│" },
+        delete = { text = "_" },
+        topdelete = { text = "‾" },
+        changedelete = { text = "~" },
+        untracked = { text = "┆" },
+      },
+      on_attach = function(bufnr)
+        local gs = package.loaded.gitsigns
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+        -- Navigation
+        map("n", "]c", function()
+          if vim.wo.diff then return "]c" end
+          vim.schedule(function() gs.next_hunk() end)
+          return "<Ignore>"
+        end, { expr = true, desc = "Next git hunk" })
+        map("n", "[c", function()
+          if vim.wo.diff then return "[c" end
+          vim.schedule(function() gs.prev_hunk() end)
+          return "<Ignore>"
+        end, { expr = true, desc = "Previous git hunk" })
+        -- Actions
+        map("n", "<leader>hs", gs.stage_hunk, { desc = "Stage hunk" })
+        map("n", "<leader>hr", gs.reset_hunk, { desc = "Reset hunk" })
+        map("n", "<leader>hS", gs.stage_buffer, { desc = "Stage buffer" })
+        map("n", "<leader>hu", gs.undo_stage_hunk, { desc = "Undo stage hunk" })
+        map("n", "<leader>hR", gs.reset_buffer, { desc = "Reset buffer" })
+        map("n", "<leader>hp", gs.preview_hunk, { desc = "Preview hunk" })
+        map("n", "<leader>hb", function() gs.blame_line({ full = true }) end, { desc = "Blame line" })
+        map("n", "<leader>hd", gs.diffthis, { desc = "Diff this" })
+      end,
+    })
+  end,
+},
 }
