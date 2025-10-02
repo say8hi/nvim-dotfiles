@@ -21,4 +21,6 @@ M.base46 = {
 --      }
 -- }
 
+M.nvimtree = require "configs.nvimtree"
+
 return M

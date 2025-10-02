@@ -168,6 +168,12 @@ return {
     end,
   },
 {
+  "nvim-telescope/telescope.nvim",
+  opts = function()
+    return require "configs.telescope"
+  end,
+},
+{
   "debugloop/telescope-undo.nvim",
   dependencies = { -- note how they're inverted to above example
     {
