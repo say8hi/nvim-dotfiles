@@ -1,40 +1,9 @@
-local cmp = require("cmp")
-
--- Load NvChad's default config
 dofile(vim.g.base46_cache .. "cmp")
 
-local cmp_ui = require("nvchad.configs.cmp").ui
-local cmp_style = cmp_ui.style
-
-local field_arrangement = {
-  atom = { "kind", "abbr", "menu" },
-  atom_colored = { "kind", "abbr", "menu" },
-}
-
-local formatting_style = {
-  fields = field_arrangement[cmp_style] or { "abbr", "kind", "menu" },
-
-  format = function(_, item)
-    local icons = require("nvchad.icons.lspkind")
-    local icon = (cmp_ui.icons and icons[item.kind]) or ""
-
-    if cmp_style == "atom" or cmp_style == "atom_colored" then
-      icon = " " .. icon .. " "
-      item.menu = cmp_ui.lspkind_text and "   (" .. item.kind .. ")" or ""
-      item.kind = icon
-    else
-      icon = cmp_ui.lspkind_text and (" " .. icon .. " ") or icon
-      item.kind = string.format("%s %s", icon, cmp_ui.lspkind_text and item.kind or "")
-    end
-
-    return item
-  end,
-}
+local cmp = require "cmp"
 
 local options = {
-  completion = {
-    completeopt = "menu,menuone",
-  },
+  completion = { completeopt = "menu,menuone" },
 
   snippet = {
     expand = function(args)
@@ -81,10 +50,8 @@ local options = {
     { name = "luasnip" },
     { name = "buffer" },
     { name = "nvim_lua" },
-    { name = "path" },
+    { name = "async_path" },
   },
-
-  formatting = formatting_style,
 
   sorting = {
     comparators = {
@@ -100,4 +67,4 @@ local options = {
   },
 }
 
-return options
+return vim.tbl_deep_extend("force", options, require "nvchad.cmp")
