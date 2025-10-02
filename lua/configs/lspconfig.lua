@@ -3,56 +3,61 @@ require("nvchad.configs.lspconfig").defaults()
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
-local lspconfig = require("lspconfig")
 local util = require "lspconfig.util"
 
 -- GOPLS
-lspconfig.gopls.setup {
-  on_attach=on_attach,
-  capabilities=capabilities,
+vim.lsp.config.gopls = {
   cmd = {"gopls"},
   filetypes = {"go", "gomod", "gowork", "gotmpl"},
-  root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-  settings={
-    gopls={
-      -- hints = {
-      --   parameterNames = true,
-      -- },
-codelenses = {
-								gc_details = false,
-								generate = true,
-								regenerate_cgo = true,
-								run_govulncheck = true,
-								test = true,
-								tidy = true,
-								upgrade_dependency = true,
-								vendor = true,
-							},
-      completeUnimported=true,
-      usePlaceholders=true,
-      analyses={
-        unusedparams=true
+  root_markers = {"go.work", "go.mod", ".git"},
+  settings = {
+    gopls = {
+      codelenses = {
+        gc_details = false,
+        generate = true,
+        regenerate_cgo = true,
+        run_govulncheck = true,
+        test = true,
+        tidy = true,
+        upgrade_dependency = true,
+        vendor = true,
+      },
+      completeUnimported = true,
+      usePlaceholders = true,
+      analyses = {
+        unusedparams = true
       }
     }
   }
 }
 
+vim.lsp.enable('gopls')
+
 -- RUFF LSP
-lspconfig.ruff.setup {
-  filetypes = { "python" },
-  on_attach = function(client, bufnr)
-    client.server_capabilities.hoverProvider = false
-    client.server_capabilities.completionProvider = false
-    on_attach(client, bufnr)
-  end,
-  capabilities = capabilities,
+vim.lsp.config.ruff = {
+  cmd = {"ruff", "server"},
+  filetypes = {"python"},
+  root_markers = {"pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git"},
 }
 
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+      client.server_capabilities.completionProvider = false
+    end
+    on_attach(client, args.buf)
+  end,
+})
+
+vim.lsp.enable('ruff')
+
 -- PYRIGHT
-lspconfig.pyright.setup {
-  filetypes = { "python" },
-  on_attach = on_attach,
-  capabilities = capabilities,
+vim.lsp.config.pyright = {
+  cmd = {"pyright-langserver", "--stdio"},
+  filetypes = {"python"},
+  root_markers = {"pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git"},
   settings = {
     pyright = {
       disableOrganizeImports = true,
@@ -85,28 +90,40 @@ lspconfig.pyright.setup {
   },
 }
 
+vim.lsp.enable('pyright')
+
 -- JSON
-lspconfig.jsonls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+vim.lsp.config.jsonls = {
+  cmd = {"vscode-json-language-server", "--stdio"},
+  filetypes = {"json", "jsonc"},
+  root_markers = {".git"},
 }
+
+vim.lsp.enable('jsonls')
 
 -- TypeScript/JavaScript
-lspconfig.ts_ls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+vim.lsp.config.ts_ls = {
+  cmd = {"typescript-language-server", "--stdio"},
+  filetypes = {"javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx"},
+  root_markers = {"package.json", "tsconfig.json", "jsconfig.json", ".git"},
 }
 
--- HTML (уберите из строки local servers = { "html", "cssls" })
-lspconfig.html.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+vim.lsp.enable('ts_ls')
+
+-- HTML
+vim.lsp.config.html = {
+  cmd = {"vscode-html-language-server", "--stdio"},
+  filetypes = {"html"},
+  root_markers = {".git"},
 }
 
--- CSS (уберите из строки local servers = { "html", "cssls" })
-lspconfig.cssls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+vim.lsp.enable('html')
+
+-- CSS
+vim.lsp.config.cssls = {
+  cmd = {"vscode-css-language-server", "--stdio"},
+  filetypes = {"css", "scss", "less"},
+  root_markers = {".git"},
 }
 
--- read :h vim.lsp.config for changing options of lsp servers 
+vim.lsp.enable('cssls') 
