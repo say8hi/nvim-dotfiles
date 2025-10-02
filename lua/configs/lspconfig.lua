@@ -40,19 +40,6 @@ vim.lsp.config.ruff = {
   root_markers = {"pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git"},
 }
 
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if client and client.name == "ruff" then
-      client.server_capabilities.hoverProvider = false
-      client.server_capabilities.completionProvider = false
-    end
-    on_attach(client, args.buf)
-  end,
-})
-
-vim.lsp.enable('ruff')
-
 -- PYRIGHT
 vim.lsp.config.pyright = {
   cmd = {"pyright-langserver", "--stdio"},
@@ -68,28 +55,23 @@ vim.lsp.config.pyright = {
         useLibraryCodeForTypes = true,
         diagnosticMode = "workspace",
         typeCheckingMode = "basic",
-        inlayHints = {
-          variableTypes = true,
-          functionReturnTypes = true,
-          callArgumentNames = true,
-          parameterNames = true,
-        },
-        diagnosticSeverityOverrides = {
-          reportUnusedImport = "warning",
-          reportUnusedVariable = "warning",
-          reportDuplicateImport = "warning",
-          reportPrivateUsage = "none",
-          reportUnknownVariableType = "none",
-          reportMissingTypeStubs = "none",
-        },
-        extraPaths = {},
-        venvPath = ".",
-        venv = ".venv",
       },
     },
   },
 }
 
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "ruff" then
+      on_attach(client, args.buf)
+    elseif client and client.name == "pyright" then
+      on_attach(client, args.buf)
+    end
+  end,
+})
+
+vim.lsp.enable('ruff')
 vim.lsp.enable('pyright')
 
 -- JSON
