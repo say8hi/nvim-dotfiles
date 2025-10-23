@@ -6,7 +6,7 @@
 local M = {}
 
 M.base46 = {
-	theme = "everblush",
+	theme = "nightowl",
 
 	-- hl_override = {
 	-- 	Comment = { italic = true },
@@ -15,11 +15,11 @@ M.base46 = {
 }
 
 -- M.nvdash = { load_on_startup = true }
--- M.ui = {
---       tabufline = {
---          lazyload = false
---      }
--- }
+M.ui = {
+  tabufline = {
+    enabled = false, -- disable NvChad's tabufline to use bufferline.nvim
+  },
+}
 
 M.nvimtree = require "configs.nvimtree"
 

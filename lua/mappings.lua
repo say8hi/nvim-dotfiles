@@ -93,3 +93,31 @@ vim.g.VM_maps = {
   ['Find Under'] = '<C-b>',
   ['Find Subword Under'] = '<C-b>',
 }
+
+-- Bufferline navigation
+map("n", "<Tab>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
+map("n", "<leader>x", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+map("n", "<leader>X", "<cmd>BufferLineCloseOthers<cr>", { desc = "Close other buffers" })
+
+-- Move buffers
+map("n", "<leader>bl", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
+map("n", "<leader>bh", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
+
+-- Pick buffer
+map("n", "<leader>bp", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
+
+-- Pin buffer
+map("n", "<leader>bP", "<cmd>BufferLineTogglePin<cr>", { desc = "Toggle pin buffer" })
+
+-- Tabs management
+map("n", "<leader>tn", "<cmd>tabnew<cr>", { desc = "New tab" })
+map("n", "<leader>tc", "<cmd>tabclose<cr>", { desc = "Close tab" })
+map("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close other tabs" })
+map("n", "gt", "<cmd>tabnext<cr>", { desc = "Next tab" })
+map("n", "gT", "<cmd>tabprevious<cr>", { desc = "Previous tab" })
+map("n", "<leader>t1", "1gt", { desc = "Go to tab 1" })
+map("n", "<leader>t2", "2gt", { desc = "Go to tab 2" })
+map("n", "<leader>t3", "3gt", { desc = "Go to tab 3" })
+map("n", "<leader>t4", "4gt", { desc = "Go to tab 4" })
+map("n", "<leader>t5", "5gt", { desc = "Go to tab 5" })

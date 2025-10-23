@@ -45,6 +45,15 @@ opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldenable = false
 opt.foldlevel = 99
+opt.fillchars = {
+  fold = " ",
+  foldopen = "-",
+  foldclose = "+",
+  foldsep = " ",
+  diff = "╱",
+  eob = " ",
+}
+opt.foldtext = ""
 
 -- Better diff
 opt.diffopt:append("vertical,algorithm:histogram,indent-heuristic")
@@ -60,3 +69,6 @@ opt.mouse = "a"
 if vim.fn.has("nvim-0.10") == 1 then
   vim.lsp.inlay_hint.enable(true)
 end
+
+-- winbar with navic breadcrumbs
+vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"

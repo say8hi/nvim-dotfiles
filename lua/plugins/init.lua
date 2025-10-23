@@ -419,6 +419,200 @@ return {
     end,
   },
   {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+    opts = {
+      input = {
+        enabled = true,
+        default_prompt = "Input:",
+        border = "rounded",
+      },
+      select = {
+        enabled = true,
+        backend = { "telescope", "builtin" },
+      },
+    },
+  },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    main = "ibl",
+    config = function()
+      local function set_ibl_colors()
+        -- get primary color from current colorscheme
+        local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+        local bg = normal.bg or 0x000000
+
+        -- use different colors based on background brightness
+        local is_light = vim.o.background == "light"
+        local scope_color = is_light and "#3b8eea" or "#61afef"
+
+        vim.api.nvim_set_hl(0, "IblScope", { fg = scope_color })
+      end
+
+      -- set colors initially
+      set_ibl_colors()
+
+      -- update colors when colorscheme changes
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = set_ibl_colors,
+      })
+
+      require("ibl").setup {
+        indent = {
+          char = "│",
+          tab_char = "│",
+        },
+        scope = {
+          enabled = true,
+          show_start = true,
+          show_end = false,
+          highlight = "IblScope",
+        },
+        exclude = {
+          filetypes = {
+            "help",
+            "alpha",
+            "dashboard",
+            "nvim-tree",
+            "Trouble",
+            "lazy",
+            "mason",
+            "notify",
+            "toggleterm",
+          },
+        },
+      }
+    end,
+  },
+  {
+    "NvChad/nvim-colorizer.lua",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      user_default_options = {
+        RGB = true,
+        RRGGBB = true,
+        names = false,
+        RRGGBBAA = true,
+        rgb_fn = true,
+        hsl_fn = true,
+        css = true,
+        css_fn = true,
+        tailwind = true,
+      },
+    },
+  },
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      preset = "modern",
+      delay = 500,
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show { global = false }
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
+  },
+  {
+    "SmiteshP/nvim-navic",
+    dependencies = "neovim/nvim-lspconfig",
+    lazy = true,
+    opts = {
+      lsp = { auto_attach = true },
+      highlight = true,
+      separator = " > ",
+      depth_limit = 5,
+    },
+  },
+  {
+    "akinsho/bufferline.nvim",
+    event = "VeryLazy",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    opts = {
+      options = {
+        mode = "buffers", -- show buffers
+        numbers = "none",
+        close_command = "bdelete! %d",
+        right_mouse_command = "bdelete! %d",
+        left_mouse_command = "buffer %d",
+        middle_mouse_command = nil,
+        indicator = {
+          icon = "▎",
+          style = "icon",
+        },
+        buffer_close_icon = "󰅖",
+        modified_icon = "●",
+        close_icon = "",
+        left_trunc_marker = "",
+        right_trunc_marker = "",
+        max_name_length = 18,
+        max_prefix_length = 15,
+        tab_size = 18,
+        diagnostics = "nvim_lsp",
+        diagnostics_update_in_insert = false,
+        diagnostics_indicator = function(count, level)
+          local icon = level:match "error" and " " or " "
+          return " " .. icon .. count
+        end,
+        offsets = {
+          {
+            filetype = "NvimTree",
+            text = "File Explorer",
+            text_align = "center",
+            separator = true,
+          },
+        },
+        color_icons = true,
+        show_buffer_icons = true,
+        show_buffer_close_icons = true,
+        show_close_icon = true,
+        show_tab_indicators = true,
+        show_duplicate_prefix = true,
+        persist_buffer_sort = true,
+        separator_style = "thin",
+        enforce_regular_tabs = false,
+        always_show_bufferline = true,
+        hover = {
+          enabled = true,
+          delay = 200,
+          reveal = { "close" },
+        },
+        sort_by = "insert_after_current",
+        -- group buffers by tabs
+        groups = {
+          options = {
+            toggle_hidden_on_enter = true,
+          },
+          items = {
+            {
+              name = "Tests",
+              highlight = { underline = true, sp = "blue" },
+              priority = 2,
+              icon = "",
+              matcher = function(buf)
+                return buf.name:match "%.test" or buf.name:match "%.spec"
+              end,
+            },
+            {
+              name = "Docs",
+              highlight = { underline = true, sp = "green" },
+              auto_close = false,
+              matcher = function(buf)
+                return buf.name:match "%.md" or buf.name:match "%.txt"
+              end,
+            },
+          },
+        },
+      },
+    },
+  },
+  {
     "lewis6991/gitsigns.nvim",
     event = "BufReadPre",
     config = function()

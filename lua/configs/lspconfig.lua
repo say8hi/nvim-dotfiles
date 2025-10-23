@@ -1,6 +1,6 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local on_attach = require("nvchad.configs.lspconfig").on_attach
+local base_on_attach = require("nvchad.configs.lspconfig").on_attach
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 -- enhanced capabilities with folding support
@@ -8,6 +8,17 @@ capabilities.textDocument.foldingRange = {
   dynamicRegistration = false,
   lineFoldingOnly = true,
 }
+
+-- custom on_attach with nvim-navic integration
+local on_attach = function(client, bufnr)
+  base_on_attach(client, bufnr)
+
+  -- attach nvim-navic if available
+  local navic_ok, navic = pcall(require, "nvim-navic")
+  if navic_ok and client.server_capabilities.documentSymbolProvider then
+    navic.attach(client, bufnr)
+  end
+end
 
 local util = require "lspconfig.util"
 
