@@ -65,6 +65,49 @@ local options = {
       cmp.config.compare.order,
     },
   },
+
+  formatting = {
+    format = function(entry, vim_item)
+      local icons = {
+        Text = "󰉿",
+        Method = "󰆧",
+        Function = "󰊕",
+        Constructor = "",
+        Field = "󰜢",
+        Variable = "󰀫",
+        Class = "󰠱",
+        Interface = "",
+        Module = "",
+        Property = "󰜢",
+        Unit = "󰑭",
+        Value = "󰎠",
+        Enum = "",
+        Keyword = "󰌋",
+        Snippet = "",
+        Color = "󰏘",
+        File = "󰈙",
+        Reference = "󰈇",
+        Folder = "󰉋",
+        EnumMember = "",
+        Constant = "󰏿",
+        Struct = "󰙅",
+        Event = "",
+        Operator = "󰆕",
+        TypeParameter = "",
+      }
+
+      vim_item.kind = string.format("%s %s", icons[vim_item.kind], vim_item.kind)
+      vim_item.menu = ({
+        nvim_lsp = "[LSP]",
+        luasnip = "[Snip]",
+        buffer = "[Buf]",
+        nvim_lua = "[API]",
+        async_path = "[Path]",
+      })[entry.source.name]
+
+      return vim_item
+    end,
+  },
 }
 
 return vim.tbl_deep_extend("force", options, require "nvchad.cmp")

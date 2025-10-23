@@ -81,3 +81,21 @@ autocmd("BufReadPost", {
     end
   end,
 })
+
+-- enable treesitter folding for supported filetypes
+autocmd("FileType", {
+  pattern = { "lua", "python", "go", "javascript", "typescript", "typescriptreact", "javascriptreact", "rust", "c", "cpp", "java", "php", "ruby" },
+  callback = function()
+    -- check if treesitter parser is available
+    local has_parser = pcall(vim.treesitter.get_parser, 0)
+    if has_parser then
+      vim.wo.foldmethod = "expr"
+      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    else
+      -- fallback to indent folding
+      vim.wo.foldmethod = "indent"
+    end
+    vim.wo.foldenable = true
+    vim.wo.foldlevel = 99
+  end,
+})
