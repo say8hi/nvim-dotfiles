@@ -190,7 +190,13 @@ return {
     "kylechui/nvim-surround",
     version = "*",
     event = { "BufReadPost", "BufNewFile" },
-    opts = {},
+    config = function()
+      require("nvim-surround").setup {
+        keymaps = {
+          visual = "S",
+        },
+      }
+    end,
   },
   {
     "nvim-telescope/telescope.nvim",
@@ -610,6 +616,91 @@ return {
           },
         },
       },
+    },
+  },
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    opts = {
+      modes = {
+        char = {
+          enabled = false, -- disable default f/F/t/T behavior
+        },
+      },
+    },
+    keys = {
+      {
+        "s",
+        mode = { "n" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash jump",
+      },
+      {
+        "S",
+        mode = { "n", "o" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+      {
+        "R",
+        mode = { "o", "x" },
+        function()
+          require("flash").treesitter_search()
+        end,
+        desc = "Treesitter Search",
+      },
+      {
+        "<c-s>",
+        mode = { "c" },
+        function()
+          require("flash").toggle()
+        end,
+        desc = "Toggle Flash Search",
+      },
+    },
+  },
+  {
+    "stevearc/aerial.nvim",
+    cmd = { "AerialToggle", "AerialOpen", "AerialNavToggle" },
+    keys = {
+      { "<leader>lo", "<cmd>AerialToggle<cr>", desc = "Aerial symbols outline" },
+      { "{", "<cmd>AerialPrev<cr>", desc = "Previous symbol" },
+      { "}", "<cmd>AerialNext<cr>", desc = "Next symbol" },
+    },
+    opts = {
+      backends = { "treesitter", "lsp", "markdown" },
+      layout = {
+        max_width = { 40, 0.3 },
+        min_width = 30,
+        default_direction = "right",
+        placement = "edge",
+      },
+      attach_mode = "global",
+      close_automatic_events = { "unfocus", "switch_buffer" },
+      keymaps = {
+        ["?"] = "actions.show_help",
+        ["<CR>"] = "actions.jump",
+        ["<C-v>"] = "actions.jump_vsplit",
+        ["<C-s>"] = "actions.jump_split",
+        ["q"] = "actions.close",
+        ["o"] = "actions.tree_toggle",
+        ["l"] = "actions.tree_open",
+        ["h"] = "actions.tree_close",
+      },
+      show_guides = true,
+      filter_kind = false,
     },
   },
   {
