@@ -3,6 +3,12 @@ require("nvchad.configs.lspconfig").defaults()
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
+-- enhanced capabilities with folding support
+capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true,
+}
+
 local util = require "lspconfig.util"
 
 -- GOPLS
@@ -22,10 +28,24 @@ vim.lsp.config.gopls = {
         upgrade_dependency = true,
         vendor = true,
       },
+      hints = {
+        assignVariableTypes = true,
+        compositeLiteralFields = true,
+        compositeLiteralTypes = true,
+        constantValues = true,
+        functionTypeParameters = true,
+        parameterNames = true,
+        rangeVariableTypes = true,
+      },
       completeUnimported = true,
       usePlaceholders = true,
+      staticcheck = true,
+      gofumpt = true,
       analyses = {
-        unusedparams = true
+        unusedparams = true,
+        shadow = true,
+        nilness = true,
+        unusedwrite = true,
       }
     }
   }
@@ -88,6 +108,30 @@ vim.lsp.config.ts_ls = {
   cmd = {"typescript-language-server", "--stdio"},
   filetypes = {"javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx"},
   root_markers = {"package.json", "tsconfig.json", "jsconfig.json", ".git"},
+  settings = {
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+  },
 }
 
 vim.lsp.enable('ts_ls')

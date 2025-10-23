@@ -112,7 +112,10 @@ return {
   },
   {
     "mbbill/undotree",
-    event = "VeryLazy",
+    cmd = "UndotreeToggle",
+    keys = {
+      { "<leader>ut", "<cmd>UndotreeToggle<cr>", desc = "Toggle Undotree" },
+    },
   },
   {
     "folke/noice.nvim",
@@ -123,7 +126,7 @@ return {
           enabled = true,
           format = "lsp_progress",
           format_done = "lsp_progress_done",
-          throttle = 1000 / 60,
+          throttle = 1000 / 30, -- reduce update frequency
         },
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -142,9 +145,21 @@ return {
       },
       presets = {
         bottom_search = true,
+        command_palette = true,
         long_message_to_split = true,
         inc_rename = true,
         lsp_doc_border = false,
+      },
+      routes = {
+        -- hide written messages
+        {
+          filter = {
+            event = "msg_show",
+            kind = "",
+            find = "written",
+          },
+          opts = { skip = true },
+        },
       },
     },
     dependencies = {
@@ -154,24 +169,28 @@ return {
   },
   {
     "RRethy/vim-illuminate",
-    event = "VeryLazy",
-    config = function()
-      require("illuminate").configure {
-        providers = {
-          "lsp",
-          "treesitter",
-          "regex",
-        },
-      }
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      providers = {
+        "lsp",
+        "treesitter",
+        "regex",
+      },
+      delay = 100,
+      large_file_cutoff = 2000,
+      large_file_overrides = {
+        providers = { "lsp" },
+      },
+    },
+    config = function(_, opts)
+      require("illuminate").configure(opts)
     end,
   },
   {
     "kylechui/nvim-surround",
-    version = "*", -- Use for stability; omit to use `main` branch for the latest features
-    event = "VeryLazy",
-    config = function()
-      require("nvim-surround").setup {}
-    end,
+    version = "*",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
   },
   {
     "nvim-telescope/telescope.nvim",
@@ -181,41 +200,47 @@ return {
   },
   {
     "debugloop/telescope-undo.nvim",
-    dependencies = { -- note how they're inverted to above example
+    dependencies = {
       {
         "nvim-telescope/telescope.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
       },
     },
     keys = {
-      { -- lazy style key map
+      {
         "<leader>u",
         "<cmd>Telescope undo<cr>",
-        desc = "undo history",
+        desc = "Undo history",
       },
     },
     opts = {
-      -- don't use `defaults = { }` here, do this in the main telescope spec
       extensions = {
         undo = {
-          -- telescope-undo.nvim config, see below
+          use_delta = true,
+          side_by_side = true,
+          layout_strategy = "vertical",
+          layout_config = {
+            preview_height = 0.8,
+          },
         },
-        -- no other extensions here, they can have their own spec too
       },
     },
     config = function(_, opts)
-      -- Calling telescope's setup from multiple specs does not hurt, it will happily merge the
-      -- configs for us. We won't use data, as everything is in it's own namespace (telescope
-      -- defaults, as well as each extension).
       require("telescope").setup(opts)
       require("telescope").load_extension "undo"
     end,
-    event = "VeryLazy",
   },
-  { "mg979/vim-visual-multi", event = "VeryLazy" },
+  {
+    "mg979/vim-visual-multi",
+    keys = {
+      { "<C-b>", mode = { "n", "v" } },
+    },
+  },
   {
     "AckslD/nvim-neoclip.lua",
-    event = "VeryLazy",
+    keys = {
+      { "<leader>o", "<cmd>Telescope neoclip<cr>", desc = "Telescope Neoclip" },
+    },
     dependencies = {
       { "nvim-telescope/telescope.nvim" },
     },
@@ -280,7 +305,23 @@ return {
   },
   {
     "ThePrimeagen/harpoon",
-    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>ta",
+        function()
+          require("harpoon.mark").add_file()
+        end,
+        desc = "Harpoon: Mark File",
+      },
+      {
+        "<C-e>",
+        function()
+          require("harpoon.ui").toggle_quick_menu()
+        end,
+        desc = "Toggle Harpoon Menu",
+      },
+    },
+    dependencies = { "nvim-lua/plenary.nvim" },
   },
   {
     "coder/claudecode.nvim",
@@ -340,10 +381,26 @@ return {
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
-    event = "VeryLazy",
-    config = function()
-      require("todo-comments").setup()
-    end,
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TodoTelescope", "TodoLocList", "TodoQuickFix" },
+    keys = {
+      {
+        "]t",
+        function()
+          require("todo-comments").jump_next()
+        end,
+        desc = "Next todo comment",
+      },
+      {
+        "[t",
+        function()
+          require("todo-comments").jump_prev()
+        end,
+        desc = "Previous todo comment",
+      },
+      { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find todos" },
+    },
+    opts = {},
   },
   {
     "windwp/nvim-autopairs",

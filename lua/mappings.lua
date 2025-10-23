@@ -85,26 +85,11 @@ map("n", "<leader>ds", '<cmd>Telescope diagnostics<CR>', { desc = "LSP diagnosti
 map("v", "<S-down>", ":m '>+1<CR>gv=gv", { desc = "move selected down" })
 map("v", "<S-up>", ":m '<-2<CR>gv=gv", { desc = "move selected up" })
 
-map("v", "p", "\"_dp", { desc = "paste without copying" })
+map("v", "p", "\"_dP", { desc = "paste without copying" })
 map("v", "c", "\"_c", { desc = "c without copying" })
-
--- Undotree
-map("n", "<leader>u", "<cmd>Telescope undo<CR>", { desc = "Telescope Undo" })
 
 -- Vim Visual Multi
 vim.g.VM_maps = {
   ['Find Under'] = '<C-b>',
   ['Find Subword Under'] = '<C-b>',
 }
-
--- Neoclip
-map("n", "<leader>o", "<cmd>Telescope neoclip<CR>", { desc = "Telescope Neoclip" })
-
--- Harpoon
-map("n", "<leader>ta", function() require("harpoon.mark").add_file() end, { desc = "Harpoon: Mark File" })
-map("n", "<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, { desc = "Toggle Harpoon Menu" })
-
--- Todo Comments
-map("n", "]t", function() require("todo-comments").jump_next() end, { desc = "Next todo comment" })
-map("n", "[t", function() require("todo-comments").jump_prev() end, { desc = "Previous todo comment" })
-map("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
