@@ -18,6 +18,11 @@ local on_attach = function(client, bufnr)
   if navic_ok and client.server_capabilities.documentSymbolProvider then
     navic.attach(client, bufnr)
   end
+
+  -- enable inlay hints if supported
+  if client.server_capabilities.inlayHintProvider then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
 end
 
 local util = require "lspconfig.util"
@@ -91,12 +96,11 @@ vim.lsp.config.pyright = {
   },
 }
 
+-- universal LspAttach autocmd for all servers
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if client and client.name == "ruff" then
-      on_attach(client, args.buf)
-    elseif client and client.name == "pyright" then
+    if client then
       on_attach(client, args.buf)
     end
   end,

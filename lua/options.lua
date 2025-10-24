@@ -73,10 +73,5 @@ opt.ttyfast = true
 -- Mouse
 opt.mouse = "a"
 
--- enable LSP inlay hints (if supported)
-if vim.fn.has("nvim-0.10") == 1 then
-  vim.lsp.inlay_hint.enable(true)
-end
-
 -- winbar with navic breadcrumbs
 vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
