@@ -167,4 +167,28 @@ vim.lsp.config.cssls = {
   root_markers = {".git"},
 }
 
-vim.lsp.enable('cssls') 
+vim.lsp.enable('cssls')
+
+-- SQL
+vim.lsp.config.sqls = {
+  cmd = {"sqls"},
+  filetypes = {"sql"},
+  root_markers = {".git"},
+  settings = {
+    sqls = {
+      connections = {
+        -- Example connections (customize as needed)
+        -- {
+        --   driver = "postgresql",
+        --   dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=mydb sslmode=disable",
+        -- },
+        -- {
+        --   driver = "mysql",
+        --   dataSourceName = "user:password@tcp(127.0.0.1:3306)/dbname",
+        -- },
+      },
+    },
+  },
+}
+
+vim.lsp.enable('sqls') 
