@@ -624,8 +624,12 @@ return {
       options = {
         mode = "buffers", -- show buffers
         numbers = "none",
-        close_command = "bdelete! %d",
-        right_mouse_command = "bdelete! %d",
+        close_command = function(bufnr)
+          require("mini.bufremove").delete(bufnr, false)
+        end,
+        right_mouse_command = function(bufnr)
+          require("mini.bufremove").delete(bufnr, false)
+        end,
         left_mouse_command = "buffer %d",
         middle_mouse_command = nil,
         indicator = {
@@ -697,6 +701,13 @@ return {
         },
       },
     },
+  },
+  {
+    "echasnovski/mini.bufremove",
+    version = "*",
+    config = function()
+      require("mini.bufremove").setup()
+    end,
   },
   {
     "folke/flash.nvim",

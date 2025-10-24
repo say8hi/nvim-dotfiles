@@ -97,7 +97,9 @@ vim.g.VM_maps = {
 -- Bufferline navigation
 map("n", "<Tab>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
 map("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
-map("n", "<leader>x", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+map("n", "<leader>x", function()
+  require("mini.bufremove").delete(0, false)
+end, { desc = "Close buffer" })
 map("n", "<leader>X", "<cmd>BufferLineCloseOthers<cr>", { desc = "Close other buffers" })
 
 -- Move buffers
