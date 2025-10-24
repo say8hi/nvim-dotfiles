@@ -131,7 +131,6 @@ return {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
         },
         signature = {
           enabled = false,
@@ -376,13 +375,52 @@ return {
     end,
   },
   {
-    "hrsh7th/nvim-cmp",
-    opts = function()
-      return require "configs.cmp"
-    end,
-    dependencies = {
-      "lukas-reineke/cmp-under-comparator",
+    "saghen/blink.cmp",
+    dependencies = "rafamadriz/friendly-snippets",
+    version = "*",
+    opts = {
+      keymap = {
+        preset = "default",
+        ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<C-e>"] = { "hide", "fallback" },
+        ["<CR>"] = { "accept", "fallback" },
+        ["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
+        ["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
+        ["<C-p>"] = { "select_prev", "fallback" },
+        ["<C-n>"] = { "select_next", "fallback" },
+        ["<C-d>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+      },
+      appearance = {
+        use_nvim_cmp_as_default = true,
+        nerd_font_variant = "mono",
+      },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+      completion = {
+        menu = {
+          border = "rounded",
+          draw = {
+            columns = { { "kind_icon" }, { "label", "label_description", gap = 1 }, { "kind" } },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+          window = {
+            border = "rounded",
+          },
+        },
+      },
+      signature = {
+        enabled = true,
+        window = {
+          border = "rounded",
+        },
+      },
     },
+    opts_extend = { "sources.default" },
   },
   {
     "folke/todo-comments.nvim",
@@ -411,18 +449,13 @@ return {
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
-    config = function()
-      require("nvim-autopairs").setup {
-        check_ts = true,
-        ts_config = {
-          lua = { "string" },
-          javascript = { "template_string" },
-        },
-      }
-      local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-      local cmp = require "cmp"
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-    end,
+    opts = {
+      check_ts = true,
+      ts_config = {
+        lua = { "string" },
+        javascript = { "template_string" },
+      },
+    },
   },
   {
     "stevearc/dressing.nvim",
