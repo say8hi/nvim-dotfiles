@@ -98,8 +98,35 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
+    init = function()
+      vim.opt.runtimepath:append(vim.fn.stdpath "config" .. "/after")
+    end,
+  },
+  {
+    "nvim-treesitter/playground",
+    cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" },
+    dependencies = "nvim-treesitter/nvim-treesitter",
     config = function()
-      require("nvim-treesitter.configs").setup(require "configs.treesitter")
+      require("nvim-treesitter.configs").setup {
+        playground = {
+          enable = true,
+          disable = {},
+          updatetime = 25,
+          persist_queries = false,
+          keybindings = {
+            toggle_query_editor = "o",
+            toggle_hl_groups = "i",
+            toggle_injections = "t",
+            toggle_anonymous_nodes = "a",
+            toggle_language_display = "I",
+            focus_language = "f",
+            unfocus_language = "F",
+            update = "R",
+            goto_node = "<cr>",
+            show_help = "?",
+          },
+        },
+      }
     end,
   },
   {
