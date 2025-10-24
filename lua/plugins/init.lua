@@ -1,4 +1,9 @@
 return {
+  -- disable nvchad's default cmp
+  {
+    "hrsh7th/nvim-cmp",
+    enabled = false,
+  },
   {
     "stevearc/conform.nvim",
     event = "BufWritePre", -- uncomment for format on save
