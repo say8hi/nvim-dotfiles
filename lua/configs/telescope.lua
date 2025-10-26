@@ -17,24 +17,12 @@ return {
     mappings = {
       n = { ["q"] = require("telescope.actions").close },
     },
-    -- Показывать файлы из .gitignore
-    file_ignore_patterns = {}, -- Убираем игнорирование
-    -- Или можно использовать:
-    -- vimgrep_arguments = {
-    --   "rg",
-    --   "--color=never",
-    --   "--no-heading",
-    --   "--with-filename",
-    --   "--line-number",
-    --   "--column",
-    --   "--smart-case",
-    --   "--no-ignore", -- Не игнорировать файлы из .gitignore
-    -- },
+    file_ignore_patterns = {},
   },
   pickers = {
     find_files = {
       hidden = true,
-      no_ignore = true, -- Показывать файлы из .gitignore
+      no_ignore = true,
     },
   },
   extensions_list = { "themes", "terms" },

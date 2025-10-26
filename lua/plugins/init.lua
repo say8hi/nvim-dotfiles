@@ -1,4 +1,11 @@
 return {
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    opts = function()
+      return require "configs.nvimtree"
+    end,
+  },
   -- disable nvchad's default cmp
   {
     "hrsh7th/nvim-cmp",
@@ -91,7 +98,7 @@ return {
         "stylua",
         "gofumpt",
         "black",
-        "sqls",
+        "sqlfluff",
       },
     },
   },
@@ -426,6 +433,7 @@ return {
     lazy = false,
     dependencies = "rafamadriz/friendly-snippets",
     version = "*",
+    build = "cargo build --release",
     opts = {
       keymap = {
         preset = "default",
