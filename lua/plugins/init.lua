@@ -445,33 +445,118 @@ return {
         ["<C-n>"] = { "select_next", "fallback" },
         ["<C-d>"] = { "scroll_documentation_up", "fallback" },
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+        ["<C-e>"] = { "hide", "fallback" },
+        ["<C-y>"] = { "select_and_accept" },
       },
       appearance = {
-        use_nvim_cmp_as_default = true,
+        use_nvim_cmp_as_default = false,
         nerd_font_variant = "mono",
       },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
+        providers = {
+          lsp = {
+            name = "LSP",
+            module = "blink.cmp.sources.lsp",
+            score_offset = 100,
+          },
+          path = {
+            name = "Path",
+            module = "blink.cmp.sources.path",
+            score_offset = 3,
+            opts = {
+              trailing_slash = false,
+              label_trailing_slash = true,
+              get_cwd = function(context)
+                return vim.fn.expand "#:p:h"
+              end,
+              show_hidden_files_by_default = false,
+            },
+          },
+          snippets = {
+            name = "Snippets",
+            module = "blink.cmp.sources.snippets",
+            score_offset = 80,
+            opts = {
+              friendly_snippets = true,
+              search_paths = { vim.fn.stdpath "config" .. "/snippets" },
+              global_snippets = { "all" },
+              extended_filetypes = {},
+              ignored_filetypes = {},
+            },
+          },
+          buffer = {
+            name = "Buffer",
+            module = "blink.cmp.sources.buffer",
+            score_offset = -3,
+          },
+        },
       },
       completion = {
+        accept = {
+          auto_brackets = {
+            enabled = true,
+          },
+        },
         menu = {
           border = "rounded",
+          max_height = 20,
+          scrolloff = 2,
+          scrollbar = true,
           draw = {
+            treesitter = { "lsp" },
             columns = { { "kind_icon" }, { "label", "label_description", gap = 1 }, { "kind" } },
           },
         },
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 200,
+          update_delay_ms = 50,
+          treesitter_highlighting = true,
           window = {
             border = "rounded",
+            max_width = 80,
+            max_height = 20,
+            scrollbar = true,
           },
+        },
+        ghost_text = {
+          enabled = true,
+        },
+      },
+      fuzzy = {
+        prebuilt_binaries = {
+          download = true,
+        },
+        frecency = {
+          enabled = true,
+        },
+        proximity = {
+          enabled = true,
         },
       },
       signature = {
         enabled = true,
         window = {
           border = "rounded",
+          scrollbar = false,
+        },
+      },
+      cmdline = {
+        enabled = true,
+        keymap = {
+          preset = "cmdline",
+          ["<Right>"] = false,
+          ["<Left>"] = false,
+        },
+        completion = {
+          list = { selection = { preselect = false } },
+          menu = {
+            auto_show = function(ctx)
+              return vim.fn.getcmdtype() == ":"
+            end,
+          },
+          ghost_text = { enabled = true },
         },
       },
     },
