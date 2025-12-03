@@ -1,5 +1,53 @@
 return {
   {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      bigfile = { enabled = true },
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+      },
+      quickfile = { enabled = true },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+      styles = {
+        notification = {
+          wo = { wrap = true },
+        },
+      },
+    },
+    keys = {
+      {
+        "<leader>un",
+        function()
+          require("snacks").notifier.hide()
+        end,
+        desc = "Dismiss all notifications",
+      },
+      {
+        "<leader>nh",
+        function()
+          require("snacks").notifier.show_history()
+        end,
+        desc = "Show notification history",
+      },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VeryLazy",
+        callback = function()
+          -- setup snacks as default notification handler
+          _G.dd = function(...)
+            require("snacks").debug.inspect(...)
+          end
+          vim.print = _G.dd
+        end,
+      })
+    end,
+  },
+  {
     "nvim-tree/nvim-tree.lua",
     dependencies = "nvim-tree/nvim-web-devicons",
     opts = function()
@@ -97,6 +145,8 @@ return {
         "json-lsp",
         "stylua",
         "gofumpt",
+        "goimports-reviser",
+        "golines",
         "black",
         "sqlfluff",
       },
@@ -128,30 +178,24 @@ return {
     end,
   },
   {
-    "nvim-treesitter/playground",
-    cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" },
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    config = function()
-      require("nvim-treesitter.configs").setup {
-        playground = {
-          enable = true,
-          disable = {},
-          updatetime = 25,
-          persist_queries = false,
-          keybindings = {
-            toggle_query_editor = "o",
-            toggle_hl_groups = "i",
-            toggle_injections = "t",
-            toggle_anonymous_nodes = "a",
-            toggle_language_display = "I",
-            focus_language = "f",
-            unfocus_language = "F",
-            update = "R",
-            goto_node = "<cr>",
-            show_help = "?",
-          },
-        },
-      }
+    "kevinhwang91/nvim-ufo",
+    dependencies = "kevinhwang91/promise-async",
+    event = "BufReadPost",
+    opts = {
+      provider_selector = function(bufnr, filetype, buftype)
+        return { "treesitter", "indent" }
+      end,
+    },
+    config = function(_, opts)
+      require("ufo").setup(opts)
+      vim.o.foldcolumn = "1"
+      vim.o.foldlevel = 99
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
+      -- add keymaps for ufo
+      vim.keymap.set("n", "zR", require("ufo").openAllFolds, { desc = "Open all folds" })
+      vim.keymap.set("n", "zM", require("ufo").closeAllFolds, { desc = "Close all folds" })
     end,
   },
   {
@@ -180,20 +224,15 @@ return {
           enabled = true,
           format = "lsp_progress",
           format_done = "lsp_progress_done",
-          throttle = 1000 / 30, -- reduce update frequency
+          throttle = 1000 / 30,
         },
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
         },
         signature = {
           enabled = false,
-          auto_open = {
-            enabled = true,
-            trigger = true,
-            luasnip = true,
-            throttle = 50,
-          },
         },
       },
       presets = {
@@ -204,7 +243,6 @@ return {
         lsp_doc_border = false,
       },
       routes = {
-        -- hide written messages
         {
           filter = {
             event = "msg_show",
@@ -528,12 +566,6 @@ return {
         prebuilt_binaries = {
           download = true,
         },
-        frecency = {
-          enabled = true,
-        },
-        proximity = {
-          enabled = true,
-        },
       },
       signature = {
         enabled = true,
@@ -711,7 +743,7 @@ return {
   },
   {
     "akinsho/bufferline.nvim",
-    event = "VeryLazy",
+    event = "UIEnter",
     dependencies = "nvim-tree/nvim-web-devicons",
     opts = {
       options = {
@@ -801,6 +833,47 @@ return {
     config = function()
       require("mini.bufremove").setup()
     end,
+  },
+  {
+    "echasnovski/mini.indentscope",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      symbol = "│",
+      options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "help",
+          "alpha",
+          "dashboard",
+          "nvim-tree",
+          "Trouble",
+          "lazy",
+          "mason",
+          "notify",
+          "toggleterm",
+          "lazyterm",
+        },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+    end,
+  },
+  {
+    "echasnovski/mini.icons",
+    lazy = true,
+    opts = {},
+    init = function()
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
+    end,
+    specs = {
+      { "nvim-tree/nvim-web-devicons", enabled = false, optional = true },
+    },
   },
   {
     "folke/flash.nvim",
