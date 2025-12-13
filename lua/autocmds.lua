@@ -49,7 +49,7 @@ autocmd("BufReadPre", {
   pattern = "*",
   callback = function()
     local max_filesize = 100 * 1024 -- 100 KB
-    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(0))
+    local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(0))
     if ok and stats and stats.size > max_filesize then
       vim.b.large_file = true
       vim.cmd "syntax clear"
@@ -63,7 +63,7 @@ autocmd("BufReadPre", {
 autocmd("BufWritePre", {
   pattern = "*",
   callback = function(event)
-    local file = vim.loop.fs_realpath(event.match) or event.match
+    local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
