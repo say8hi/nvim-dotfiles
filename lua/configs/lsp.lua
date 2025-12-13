@@ -53,10 +53,11 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
-local lspconfig = require "lspconfig"
-
 -- GOPLS
-lspconfig.gopls.setup {
+vim.lsp.config.gopls = {
+  cmd = { "gopls" },
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_markers = { ".git", "go.mod" },
   capabilities = capabilities,
   on_init = on_init,
   on_attach = on_attach,
@@ -90,20 +91,26 @@ lspconfig.gopls.setup {
         shadow = true,
         nilness = true,
         unusedwrite = true,
-      }
-    }
-  }
+      },
+    },
+  },
 }
 
 -- RUFF LSP
-lspconfig.ruff.setup {
+vim.lsp.config.ruff = {
+  cmd = { "ruff", "server" },
+  filetypes = { "python" },
+  root_markers = { ".git", "pyproject.toml", "setup.py" },
   capabilities = capabilities,
   on_init = on_init,
   on_attach = on_attach,
 }
 
 -- PYRIGHT
-lspconfig.pyright.setup {
+vim.lsp.config.pyright = {
+  cmd = { "pyright-langserver", "--stdio" },
+  filetypes = { "python" },
+  root_markers = { ".git", "pyproject.toml", "setup.py" },
   capabilities = capabilities,
   on_init = on_init,
   on_attach = on_attach,
@@ -123,14 +130,20 @@ lspconfig.pyright.setup {
 }
 
 -- JSON
-lspconfig.jsonls.setup {
+vim.lsp.config.jsonls = {
+  cmd = { "vscode-json-language-server", "--stdio" },
+  filetypes = { "json", "jsonc" },
+  root_markers = { ".git" },
   capabilities = capabilities,
   on_init = on_init,
   on_attach = on_attach,
 }
 
 -- TypeScript/JavaScript
-lspconfig.ts_ls.setup {
+vim.lsp.config.ts_ls = {
+  cmd = { "typescript-language-server", "--stdio" },
+  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+  root_markers = { ".git", "package.json" },
   capabilities = capabilities,
   on_init = on_init,
   on_attach = on_attach,
@@ -161,40 +174,27 @@ lspconfig.ts_ls.setup {
 }
 
 -- HTML
-lspconfig.html.setup {
+vim.lsp.config.html = {
+  cmd = { "vscode-html-language-server", "--stdio" },
+  filetypes = { "html" },
+  root_markers = { ".git" },
   capabilities = capabilities,
   on_init = on_init,
   on_attach = on_attach,
 }
 
 -- CSS
-lspconfig.cssls.setup {
+vim.lsp.config.cssls = {
+  cmd = { "vscode-css-language-server", "--stdio" },
+  filetypes = { "css", "scss", "less" },
+  root_markers = { ".git" },
   capabilities = capabilities,
   on_init = on_init,
   on_attach = on_attach,
 }
 
--- SQL
--- sqls is not installed, uncomment when needed
--- vim.lsp.config.sqls = {
---   cmd = {"sqls"},
---   filetypes = {"sql"},
---   root_markers = {".git"},
---   settings = {
---     sqls = {
---       connections = {
---         -- Example connections (customize as needed)
---         -- {
---         --   driver = "postgresql",
---         --   dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=mydb sslmode=disable",
---         -- },
---         -- {
---         --   driver = "mysql",
---         --   dataSourceName = "user:password@tcp(127.0.0.1:3306)/dbname",
---         -- },
---       },
---     },
---   },
--- }
---
--- vim.lsp.enable('sqls') 
+-- Enable all configured LSP servers
+local servers = { "gopls", "ruff", "pyright", "jsonls", "ts_ls", "html", "cssls" }
+for _, server in ipairs(servers) do
+  vim.lsp.enable(server)
+end

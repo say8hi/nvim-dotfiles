@@ -92,10 +92,6 @@ return {
   },
 
   {
-    "neovim/nvim-lspconfig",
-    lazy = false,
-  },
-  {
     "nvim-neotest/nvim-nio",
   },
   {
@@ -743,7 +739,6 @@ return {
   },
   {
     "SmiteshP/nvim-navic",
-    dependencies = "neovim/nvim-lspconfig",
     lazy = true,
     opts = {
       lsp = { auto_attach = true },
