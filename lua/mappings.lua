@@ -1,7 +1,14 @@
-require "nvchad.mappings"
-
 local map = vim.keymap.set
 
+-- Insert mode navigation
+map("i", "<C-b>", "<ESC>^i", { desc = "move beginning of line" })
+map("i", "<C-e>", "<End>", { desc = "move end of line" })
+map("i", "<C-h>", "<Left>", { desc = "move left" })
+map("i", "<C-l>", "<Right>", { desc = "move right" })
+map("i", "<C-j>", "<Down>", { desc = "move down" })
+map("i", "<C-k>", "<Up>", { desc = "move up" })
+
+-- Quick escape
 map("i", "jk", "<ESC>")
 map("i", "<C-CR>", function()
         local enter = require("scripts.smart_enter")
@@ -10,9 +17,50 @@ map("i", "<C-CR>", function()
   {desc = "Magic enter"}
 )
 
- -- Normal
+-- Normal mode
+
+-- Window navigation
+map("n", "<C-h>", "<C-w>h", { desc = "switch window left" })
+map("n", "<C-l>", "<C-w>l", { desc = "switch window right" })
+map("n", "<C-j>", "<C-w>j", { desc = "switch window down" })
+map("n", "<C-k>", "<C-w>k", { desc = "switch window up" })
+
+-- General
+map("n", "<Esc>", "<cmd>noh<CR>", { desc = "clear highlights" })
+map("n", "<C-s>", "<cmd>w<CR>", { desc = "save file" })
+map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "copy whole file" })
 map("n", ";", ":", { desc = "CMD enter command mode" })
 
+-- Toggle line numbers
+map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "toggle line number" })
+map("n", "<leader>rn", "<cmd>set rnu!<CR>", { desc = "toggle relative number" })
+
+-- Format file
+map({ "n", "x" }, "<leader>fm", function()
+  require("conform").format { lsp_fallback = true }
+end, { desc = "format file" })
+
+-- Comment
+map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
+map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
+
+-- NvimTree
+map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle" })
+map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus" })
+
+-- Telescope
+map("n", "<leader>fw", "<cmd>Telescope live_grep<CR>", { desc = "live grep" })
+map("n", "<leader>fb", "<cmd>Telescope buffers<CR>", { desc = "find buffers" })
+map("n", "<leader>fh", "<cmd>Telescope help_tags<CR>", { desc = "help page" })
+map("n", "<leader>ma", "<cmd>Telescope marks<CR>", { desc = "find marks" })
+map("n", "<leader>fo", "<cmd>Telescope oldfiles<CR>", { desc = "find oldfiles" })
+map("n", "<leader>fz", "<cmd>Telescope current_buffer_fuzzy_find<CR>", { desc = "find in buffer" })
+map("n", "<leader>cm", "<cmd>Telescope git_commits<CR>", { desc = "git commits" })
+map("n", "<leader>gt", "<cmd>Telescope git_status<CR>", { desc = "git status" })
+map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "find files" })
+map("n", "<leader>fa", "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", { desc = "find all files" })
+
+-- LSP
 map("n", "gsd", ':vsplit<CR>:lua vim.lsp.buf.definition()<CR>', { noremap = true, silent = true, desc = "LSP definition in vsplit" })
 
 map("n", "gr",
@@ -127,3 +175,25 @@ map("n", "<leader>t2", "2gt", { desc = "Go to tab 2" })
 map("n", "<leader>t3", "3gt", { desc = "Go to tab 3" })
 map("n", "<leader>t4", "4gt", { desc = "Go to tab 4" })
 map("n", "<leader>t5", "5gt", { desc = "Go to tab 5" })
+
+-- Terminal
+map("t", "<C-x>", "<C-\\><C-N>", { desc = "escape terminal mode" })
+
+-- Terminal splits (like nvchad.term)
+map({ "n", "t" }, "<A-h>", function()
+  require("utils.terminal").horizontal()
+end, { desc = "terminal horizontal split" })
+
+map({ "n", "t" }, "<A-v>", function()
+  require("utils.terminal").vertical()
+end, { desc = "terminal vertical split" })
+
+map({ "n", "t" }, "<A-i>", function()
+  require("utils.terminal").float()
+end, { desc = "terminal floating" })
+
+-- WhichKey
+map("n", "<leader>wK", "<cmd>WhichKey <CR>", { desc = "whichkey all keymaps" })
+map("n", "<leader>wk", function()
+  vim.cmd("WhichKey " .. vim.fn.input "WhichKey: ")
+end, { desc = "whichkey query lookup" })
