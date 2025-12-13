@@ -1,7 +1,23 @@
-require("nvchad.configs.lspconfig").defaults()
+-- LSP capabilities
+local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-local base_on_attach = require("nvchad.configs.lspconfig").on_attach
-local capabilities = require("nvchad.configs.lspconfig").capabilities
+capabilities.textDocument.completion.completionItem = {
+  documentationFormat = { "markdown", "plaintext" },
+  snippetSupport = true,
+  preselectSupport = true,
+  insertReplaceSupport = true,
+  labelDetailsSupport = true,
+  deprecatedSupport = true,
+  commitCharactersSupport = true,
+  tagSupport = { valueSet = { 1 } },
+  resolveSupport = {
+    properties = {
+      "documentation",
+      "detail",
+      "additionalTextEdits",
+    },
+  },
+}
 
 -- enhanced capabilities with folding support
 capabilities.textDocument.foldingRange = {
@@ -9,10 +25,15 @@ capabilities.textDocument.foldingRange = {
   lineFoldingOnly = true,
 }
 
--- custom on_attach with nvim-navic integration
-local on_attach = function(client, bufnr)
-  base_on_attach(client, bufnr)
+-- disable semanticTokens for better performance
+local function on_init(client, _)
+  if client.supports_method "textDocument/semanticTokens" then
+    client.server_capabilities.semanticTokensProvider = nil
+  end
+end
 
+-- custom on_attach with nvim-navic integration
+local function on_attach(client, bufnr)
   -- attach nvim-navic if available
   local navic_ok, navic = pcall(require, "nvim-navic")
   if navic_ok and client.server_capabilities.documentSymbolProvider then
@@ -25,13 +46,20 @@ local on_attach = function(client, bufnr)
   end
 end
 
-local util = require "lspconfig.util"
+-- diagnostic signs
+local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+local lspconfig = require "lspconfig"
 
 -- GOPLS
-vim.lsp.config.gopls = {
-  cmd = {"gopls"},
-  filetypes = {"go", "gomod", "gowork", "gotmpl"},
-  root_markers = {"go.work", "go.mod", ".git"},
+lspconfig.gopls.setup {
+  capabilities = capabilities,
+  on_init = on_init,
+  on_attach = on_attach,
   settings = {
     gopls = {
       codelenses = {
@@ -67,20 +95,18 @@ vim.lsp.config.gopls = {
   }
 }
 
-vim.lsp.enable('gopls')
-
 -- RUFF LSP
-vim.lsp.config.ruff = {
-  cmd = {"ruff", "server"},
-  filetypes = {"python"},
-  root_markers = {"pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git"},
+lspconfig.ruff.setup {
+  capabilities = capabilities,
+  on_init = on_init,
+  on_attach = on_attach,
 }
 
 -- PYRIGHT
-vim.lsp.config.pyright = {
-  cmd = {"pyright-langserver", "--stdio"},
-  filetypes = {"python"},
-  root_markers = {"pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git"},
+lspconfig.pyright.setup {
+  capabilities = capabilities,
+  on_init = on_init,
+  on_attach = on_attach,
   settings = {
     pyright = {
       disableOrganizeImports = true,
@@ -96,33 +122,18 @@ vim.lsp.config.pyright = {
   },
 }
 
--- universal LspAttach autocmd for all servers
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if client then
-      on_attach(client, args.buf)
-    end
-  end,
-})
-
-vim.lsp.enable('ruff')
-vim.lsp.enable('pyright')
-
 -- JSON
-vim.lsp.config.jsonls = {
-  cmd = {"vscode-json-language-server", "--stdio"},
-  filetypes = {"json", "jsonc"},
-  root_markers = {".git"},
+lspconfig.jsonls.setup {
+  capabilities = capabilities,
+  on_init = on_init,
+  on_attach = on_attach,
 }
 
-vim.lsp.enable('jsonls')
-
 -- TypeScript/JavaScript
-vim.lsp.config.ts_ls = {
-  cmd = {"typescript-language-server", "--stdio"},
-  filetypes = {"javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx"},
-  root_markers = {"package.json", "tsconfig.json", "jsconfig.json", ".git"},
+lspconfig.ts_ls.setup {
+  capabilities = capabilities,
+  on_init = on_init,
+  on_attach = on_attach,
   settings = {
     typescript = {
       inlayHints = {
@@ -149,25 +160,19 @@ vim.lsp.config.ts_ls = {
   },
 }
 
-vim.lsp.enable('ts_ls')
-
 -- HTML
-vim.lsp.config.html = {
-  cmd = {"vscode-html-language-server", "--stdio"},
-  filetypes = {"html"},
-  root_markers = {".git"},
+lspconfig.html.setup {
+  capabilities = capabilities,
+  on_init = on_init,
+  on_attach = on_attach,
 }
-
-vim.lsp.enable('html')
 
 -- CSS
-vim.lsp.config.cssls = {
-  cmd = {"vscode-css-language-server", "--stdio"},
-  filetypes = {"css", "scss", "less"},
-  root_markers = {".git"},
+lspconfig.cssls.setup {
+  capabilities = capabilities,
+  on_init = on_init,
+  on_attach = on_attach,
 }
-
-vim.lsp.enable('cssls')
 
 -- SQL
 -- sqls is not installed, uncomment when needed

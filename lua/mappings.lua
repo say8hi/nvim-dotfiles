@@ -60,39 +60,48 @@ map("n", "<leader>gt", "<cmd>Telescope git_status<CR>", { desc = "git status" })
 map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "find files" })
 map("n", "<leader>fa", "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", { desc = "find all files" })
 
--- LSP
-map("n", "gsd", ':vsplit<CR>:lua vim.lsp.buf.definition()<CR>', { noremap = true, silent = true, desc = "LSP definition in vsplit" })
+-- LSP mappings (applied on LspAttach)
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local bufnr = args.buf
+    local function lsp_map(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = "LSP " .. desc })
+    end
 
-map("n", "gr",
-      function()
-        local telescope = require('telescope.builtin')
-        telescope.lsp_references()
-      end
-, { desc = "LSP references" })
+    -- Navigation
+    lsp_map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+    lsp_map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+    lsp_map("n", "gsd", ":vsplit<CR>:lua vim.lsp.buf.definition()<CR>", "Definition in vsplit")
+    lsp_map("n", "K", vim.lsp.buf.hover, "Hover documentation")
+    lsp_map("n", "gi", function()
+      require('telescope.builtin').lsp_implementations()
+    end, "Go to implementation")
+    lsp_map("n", "<C-k>", vim.lsp.buf.signature_help, "Signature help")
+    lsp_map("n", "gr", function()
+      require('telescope.builtin').lsp_references()
+    end, "Show references")
+    lsp_map("n", "<leader>D", vim.lsp.buf.type_definition, "Go to type definition")
 
+    -- Actions
+    lsp_map("n", "<leader>ra", vim.lsp.buf.rename, "Rename symbol")
+    lsp_map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+    lsp_map("n", "<leader>f", function()
+      vim.lsp.buf.format { async = true }
+    end, "Format buffer")
 
--- map("n", "gd",
---       function()
---         local telescope = require('telescope.builtin')
---         telescope.lsp_definitions()
---       end
--- , { desc = "LSP definitions" })
+    -- Workspace
+    lsp_map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, "Add workspace folder")
+    lsp_map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove workspace folder")
+    lsp_map("n", "<leader>wl", function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, "List workspace folders")
 
-map("n", "gi",
-      function()
-        local telescope = require('telescope.builtin')
-        telescope.lsp_implementations()
-      end
-, { desc = "LSP references" })
-
-
-map("n", "gh", function()
-  vim.lsp.buf.hover()
-end, { desc = "Show information about the symbol under the cursor" })
-
-map("n", "gl", function()
-  vim.diagnostic.open_float()
-end, { desc = "Show line diagnostics" })
+    -- Diagnostics
+    lsp_map("n", "gl", vim.diagnostic.open_float, "Show line diagnostics")
+    lsp_map("n", "[d", vim.diagnostic.goto_prev, "Previous diagnostic")
+    lsp_map("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")
+  end,
+})
 
 
 map("n", "<leader>gj", "<cmd>GoTagAdd json<CR>", { desc = "Add JSON tags" })
