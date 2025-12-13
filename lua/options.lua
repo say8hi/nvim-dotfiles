@@ -60,5 +60,24 @@ opt.ttyfast = true
 -- Mouse
 opt.mouse = "a"
 
--- winbar with navic breadcrumbs
-vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
+-- winbar with navic breadcrumbs (replaced by barbecue.nvim)
+-- vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
+
+-- Diagnostics configuration
+vim.diagnostic.config {
+  virtual_text = {
+    prefix = "●",
+    spacing = 4,
+  },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+  float = {
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
+    focusable = false,
+  },
+}

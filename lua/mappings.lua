@@ -42,6 +42,10 @@ map("n", "gh", function()
   vim.lsp.buf.hover()
 end, { desc = "Show information about the symbol under the cursor" })
 
+map("n", "gl", function()
+  vim.diagnostic.open_float()
+end, { desc = "Show line diagnostics" })
+
 
 map("n", "<leader>gj", "<cmd>GoTagAdd json<CR>", { desc = "Add JSON tags" })
 map("n", "ga", "<cmd>GoIfErr<CR>", { desc = "if err != nil {}" })
