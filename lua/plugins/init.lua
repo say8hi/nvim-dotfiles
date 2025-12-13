@@ -1009,8 +1009,105 @@ return {
           map("n", "<leader>hb", function()
             gs.blame_line { full = true }
           end, { desc = "Blame line" })
+          map("n", "<leader>hB", gs.toggle_current_line_blame, { desc = "Toggle inline blame" })
           map("n", "<leader>hd", gs.diffthis, { desc = "Diff this" })
         end,
+      }
+    end,
+  },
+  {
+    "akinsho/git-conflict.nvim",
+    event = "VeryLazy",
+    version = "*",
+    config = true,
+    keys = {
+      { "<leader>co", "<cmd>GitConflictChooseOurs<cr>", desc = "Choose ours" },
+      { "<leader>ct", "<cmd>GitConflictChooseTheirs<cr>", desc = "Choose theirs" },
+      { "<leader>cb", "<cmd>GitConflictChooseBoth<cr>", desc = "Choose both" },
+      { "<leader>c0", "<cmd>GitConflictChooseNone<cr>", desc = "Choose none" },
+      { "]x", "<cmd>GitConflictNextConflict<cr>", desc = "Next conflict" },
+      { "[x", "<cmd>GitConflictPrevConflict<cr>", desc = "Previous conflict" },
+      { "<leader>cq", "<cmd>GitConflictListQf<cr>", desc = "List conflicts in quickfix" },
+    },
+  },
+  {
+    "chrisgrieser/nvim-spider",
+    lazy = true,
+    keys = {
+      {
+        "w",
+        "<cmd>lua require('spider').motion('w')<CR>",
+        mode = { "n", "o", "x" },
+        desc = "Spider-w",
+      },
+      {
+        "e",
+        "<cmd>lua require('spider').motion('e')<CR>",
+        mode = { "n", "o", "x" },
+        desc = "Spider-e",
+      },
+      {
+        "b",
+        "<cmd>lua require('spider').motion('b')<CR>",
+        mode = { "n", "o", "x" },
+        desc = "Spider-b",
+      },
+    },
+  },
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    opts = {
+      dir = vim.fn.expand(vim.fn.stdpath "state" .. "/sessions/"),
+      options = { "buffers", "curdir", "tabpages", "winsize" },
+    },
+    keys = {
+      {
+        "<leader>qs",
+        function()
+          require("persistence").load()
+        end,
+        desc = "Restore session for cwd",
+      },
+      {
+        "<leader>ql",
+        function()
+          require("persistence").load { last = true }
+        end,
+        desc = "Restore last session",
+      },
+      {
+        "<leader>qd",
+        function()
+          require("persistence").stop()
+        end,
+        desc = "Don't save current session",
+      },
+    },
+  },
+  {
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    version = "*",
+    event = "LspAttach",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("barbecue").setup {
+        attach_navic = false,
+        show_modified = false,
+        theme = "auto",
+        include_buftypes = { "" },
+        exclude_filetypes = { "netrw", "toggleterm", "nvim-tree", "help", "lazy", "mason", "gitcommit" },
+        show_dirname = true,
+        show_basename = true,
+        symbols = {
+          modified = "●",
+          ellipsis = "…",
+          separator = "",
+        },
       }
     end,
   },
