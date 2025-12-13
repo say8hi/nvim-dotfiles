@@ -89,37 +89,3 @@ autocmd("FileType", {
     vim.wo.foldenable = true
   end,
 })
-
--- auto reload theme when matugen theme file changes
-local theme_file = vim.fn.stdpath "data" .. "/lazy/base46/lua/base46/themes/matugen.lua"
-
--- reload theme function
-local function reload_theme()
-  -- clear lua module cache for theme
-  package.loaded["base46.themes.matugen"] = nil
-
-  -- reload base46 highlights
-  local ok, base46 = pcall(require, "base46")
-  if ok then
-    base46.load_all_highlights()
-    vim.notify("matugen theme reloaded", vim.log.levels.INFO)
-  end
-end
-
--- watch theme file for changes
-local watcher = vim.loop.new_fs_event()
-if watcher then
-  watcher:start(
-    theme_file,
-    {},
-    vim.schedule_wrap(function()
-      reload_theme()
-    end)
-  )
-end
-
--- also reload on manual save
-autocmd("BufWritePost", {
-  pattern = theme_file,
-  callback = reload_theme,
-})

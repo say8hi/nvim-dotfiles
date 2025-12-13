@@ -1,5 +1,7 @@
-vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
+
+-- temporary stub for nvchad base46_cache (will be removed in step 7)
+vim.g.base46_cache = vim.fn.stdpath "data" .. "/nvchad_stub/"
 
 -- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
@@ -26,9 +28,6 @@ require("lazy").setup({
 }, lazy_config)
 
 vim.opt.clipboard = "unnamedplus"
--- load theme
-dofile(vim.g.base46_cache .. "defaults")
-dofile(vim.g.base46_cache .. "statusline")
 
 require "options"
 require "autocmds"

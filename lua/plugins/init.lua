@@ -10,7 +10,7 @@ return {
         timeout = 3000,
       },
       quickfile = { enabled = true },
-      statuscolumn = { enabled = true },
+      statuscolumn = { enabled = false },
       words = { enabled = true },
       styles = {
         notification = {
@@ -45,6 +45,15 @@ return {
           vim.print = _G.dd
         end,
       })
+    end,
+  },
+  {
+    "echasnovski/mini.base16",
+    version = false,
+    priority = 1000,
+    lazy = false,
+    config = function()
+      require("colors.matugen")
     end,
   },
   {
@@ -176,6 +185,9 @@ return {
     init = function()
       vim.opt.runtimepath:append(vim.fn.stdpath "config" .. "/after")
     end,
+    config = function()
+      require("nvim-treesitter.configs").setup(require "configs.treesitter")
+    end,
   },
   {
     "kevinhwang91/nvim-ufo",
@@ -188,7 +200,7 @@ return {
     },
     config = function(_, opts)
       require("ufo").setup(opts)
-      vim.o.foldcolumn = "1"
+      vim.o.foldcolumn = "0"
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
@@ -291,8 +303,9 @@ return {
   },
   {
     "nvim-telescope/telescope.nvim",
-    opts = function()
-      return require "configs.telescope"
+    opts = {},
+    config = function()
+      require("telescope").setup(require "configs.telescope")
     end,
   },
   {
