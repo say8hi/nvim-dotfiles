@@ -186,6 +186,10 @@ map("n", "<leader>t5", "5gt", { desc = "Go to tab 5" })
 -- Terminal
 map("t", "<C-x>", "<C-\\><C-N>", { desc = "escape terminal mode" })
 
+-- Fix Alt+Backspace in terminal mode - map to Ctrl+W (delete word)
+map("t", "<M-BS>", "<C-w>", { desc = "delete word backward in terminal" })
+map("t", "<A-BS>", "<C-w>", { desc = "delete word backward in terminal" })
+
 -- Terminal splits
 map({ "n", "t" }, "<A-h>", function()
   require("utils.terminal").horizontal()
