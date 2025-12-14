@@ -58,6 +58,57 @@ map("n", "<leader>gt", "<cmd>Telescope git_status<CR>", { desc = "git status" })
 map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "find files" })
 map("n", "<leader>fa", "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", { desc = "find all files" })
 
+-- Git (gitsigns - applied on BufEnter for git files)
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = "*",
+  callback = function(args)
+    local bufnr = args.buf
+    -- Only setup gitsigns mappings if gitsigns is loaded
+    vim.schedule(function()
+      if package.loaded.gitsigns then
+        local gs = package.loaded.gitsigns
+        local function git_map(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+        end
+
+        -- Navigation
+        git_map("n", "]c", function()
+          if vim.wo.diff then
+            return "]c"
+          end
+          vim.schedule(function()
+            gs.next_hunk()
+          end)
+          return "<Ignore>"
+        end, "Next git hunk")
+
+        git_map("n", "[c", function()
+          if vim.wo.diff then
+            return "[c"
+          end
+          vim.schedule(function()
+            gs.prev_hunk()
+          end)
+          return "<Ignore>"
+        end, "Previous git hunk")
+
+        -- Actions
+        git_map("n", "<leader>hs", gs.stage_hunk, "Stage hunk")
+        git_map("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
+        git_map("n", "<leader>hS", gs.stage_buffer, "Stage buffer")
+        git_map("n", "<leader>hu", gs.undo_stage_hunk, "Undo stage hunk")
+        git_map("n", "<leader>hR", gs.reset_buffer, "Reset buffer")
+        git_map("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
+        git_map("n", "<leader>hb", function()
+          gs.blame_line { full = true }
+        end, "Blame line")
+        git_map("n", "<leader>hB", gs.toggle_current_line_blame, "Toggle inline blame")
+        git_map("n", "<leader>hd", gs.diffthis, "Diff this")
+      end
+    end)
+  end,
+})
+
 -- LSP mappings (applied on LspAttach)
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
@@ -74,7 +125,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     lsp_map("n", "gi", function()
       require('telescope.builtin').lsp_implementations()
     end, "Go to implementation")
-    lsp_map("n", "<C-k>", vim.lsp.buf.signature_help, "Signature help")
+    lsp_map("n", "gK", vim.lsp.buf.signature_help, "Signature help")  -- Changed from <C-k> to avoid conflict with window navigation
     lsp_map("n", "gr", function()
       require('telescope.builtin').lsp_references()
     end, "Show references")
@@ -101,7 +152,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+-- Folding (nvim-ufo)
+map("n", "zR", function()
+  require("ufo").openAllFolds()
+end, { desc = "Open all folds" })
+map("n", "zM", function()
+  require("ufo").closeAllFolds()
+end, { desc = "Close all folds" })
 
+-- Go specific
 map("n", "<leader>gj", "<cmd>GoTagAdd json<CR>", { desc = "Add JSON tags" })
 map("n", "ga", "<cmd>GoIfErr<CR>", { desc = "if err != nil {}" })
 
