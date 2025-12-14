@@ -21,6 +21,7 @@ vim.opt.clipboard = "unnamedplus"
 
 require "options"
 require "autocmds"
+require "commands"
 
 vim.schedule(function()
   require "mappings"
