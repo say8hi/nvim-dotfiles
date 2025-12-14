@@ -101,3 +101,8 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
   callback = apply_custom_highlights,
 })
+
+return {
+  palette = palette,
+  colors = colors,
+}

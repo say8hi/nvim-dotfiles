@@ -62,47 +62,7 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       local lualine = require "lualine"
-
-      -- Custom theme based on matugen colors
-      local colors = {
-        bg = '#151310',
-        fg = '#e8e1dc',
-        yellow = '#d6c4af',
-        cyan = '#ffddb3',
-        darkblue = '#151310',
-        green = '#c3cb9f',
-        orange = '#c5ab8d',
-        violet = '#e0e7ba',
-        magenta = '#ffcbc5',
-        blue = '#e3c197',
-        red = '#ffb4ab',
-        grey = '#4e453c',
-      }
-
-      local custom_theme = {
-        normal = {
-          a = { fg = colors.bg, bg = colors.blue, gui = 'bold' },
-          b = { fg = colors.fg, bg = colors.grey },
-          c = { fg = colors.fg, bg = colors.bg },
-        },
-        insert = {
-          a = { fg = colors.bg, bg = colors.green, gui = 'bold' },
-        },
-        visual = {
-          a = { fg = colors.bg, bg = colors.violet, gui = 'bold' },
-        },
-        replace = {
-          a = { fg = colors.bg, bg = colors.red, gui = 'bold' },
-        },
-        command = {
-          a = { fg = colors.bg, bg = colors.yellow, gui = 'bold' },
-        },
-        inactive = {
-          a = { fg = colors.fg, bg = colors.grey },
-          b = { fg = colors.fg, bg = colors.grey },
-          c = { fg = colors.grey, bg = colors.bg },
-        },
-      }
+      local theme = require "theme"
 
       -- lsp clients component
       local lsp_clients = {
@@ -123,7 +83,7 @@ return {
       lualine.setup {
         options = {
           icons_enabled = true,
-          theme = custom_theme,
+          theme = theme.get_lualine_theme(),
           component_separators = { left = "|", right = "|" },
           section_separators = { left = "", right = "" },
           disabled_filetypes = {
