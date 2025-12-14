@@ -705,6 +705,12 @@ return {
             enabled = true,
           },
         },
+        list = {
+          selection = {
+            preselect = false, -- don't auto-select first item
+            auto_insert = true, -- show preview when navigating with arrows
+          },
+        },
         menu = {
           border = "rounded",
           max_height = 20,
@@ -712,7 +718,7 @@ return {
           scrollbar = true,
           draw = {
             treesitter = { "lsp" },
-            columns = { { "kind_icon" }, { "label", "label_description", gap = 1 }, { "kind" } },
+            columns = { { "kind_icon" }, { "label", "label_description", gap = 1 }, { "kind", "source_name" } },
           },
         },
         documentation = {
@@ -732,15 +738,21 @@ return {
         },
       },
       fuzzy = {
+        use_frizbee = true, -- use Rust fuzzy matcher (6x faster than fzf)
+        use_typo_resistance = true, -- helps with typos
         prebuilt_binaries = {
           download = true,
         },
       },
       signature = {
         enabled = true,
+        trigger = {
+          show_on_insert_on_trigger_character = true,
+        },
         window = {
           border = "rounded",
           scrollbar = false,
+          treesitter_highlighting = true,
         },
       },
       cmdline = {
