@@ -46,13 +46,6 @@ local function on_attach(client, bufnr)
   end
 end
 
--- diagnostic signs
-local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
 -- GOPLS
 vim.lsp.config.gopls = {
   cmd = { "gopls" },

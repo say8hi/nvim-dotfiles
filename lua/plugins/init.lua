@@ -53,12 +53,174 @@ return {
     priority = 1000,
     lazy = false,
     config = function()
-      require("colors.matugen")
+      require "colors.matugen"
+    end,
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      local lualine = require "lualine"
+
+      -- Custom theme based on matugen colors
+      local colors = {
+        bg = '#151310',
+        fg = '#e8e1dc',
+        yellow = '#d6c4af',
+        cyan = '#ffddb3',
+        darkblue = '#151310',
+        green = '#c3cb9f',
+        orange = '#c5ab8d',
+        violet = '#e0e7ba',
+        magenta = '#ffcbc5',
+        blue = '#e3c197',
+        red = '#ffb4ab',
+        grey = '#4e453c',
+      }
+
+      local custom_theme = {
+        normal = {
+          a = { fg = colors.bg, bg = colors.blue, gui = 'bold' },
+          b = { fg = colors.fg, bg = colors.grey },
+          c = { fg = colors.fg, bg = colors.bg },
+        },
+        insert = {
+          a = { fg = colors.bg, bg = colors.green, gui = 'bold' },
+        },
+        visual = {
+          a = { fg = colors.bg, bg = colors.violet, gui = 'bold' },
+        },
+        replace = {
+          a = { fg = colors.bg, bg = colors.red, gui = 'bold' },
+        },
+        command = {
+          a = { fg = colors.bg, bg = colors.yellow, gui = 'bold' },
+        },
+        inactive = {
+          a = { fg = colors.fg, bg = colors.grey },
+          b = { fg = colors.fg, bg = colors.grey },
+          c = { fg = colors.grey, bg = colors.bg },
+        },
+      }
+
+      -- lsp clients component
+      local lsp_clients = {
+        function()
+          local clients = vim.lsp.get_clients { bufnr = 0 }
+          if #clients == 0 then
+            return ""
+          end
+
+          local client_names = {}
+          for _, client in ipairs(clients) do
+            table.insert(client_names, client.name)
+          end
+          return "LSP: " .. table.concat(client_names, ", ")
+        end,
+      }
+
+      lualine.setup {
+        options = {
+          icons_enabled = true,
+          theme = custom_theme,
+          component_separators = { left = "|", right = "|" },
+          section_separators = { left = "", right = "" },
+          disabled_filetypes = {
+            statusline = { "dashboard", "alpha", "starter", "snacks_dashboard" },
+            winbar = {},
+          },
+          ignore_focus = {},
+          always_divide_middle = true,
+          globalstatus = true,
+          refresh = {
+            statusline = 100,
+            tabline = 100,
+            winbar = 100,
+          },
+        },
+        sections = {
+          lualine_a = {
+            {
+              "mode",
+              fmt = function(str)
+                return " " .. str
+              end,
+            },
+          },
+          lualine_b = {
+            "branch",
+            {
+              "diff",
+              symbols = { added = "+", modified = "~", removed = "-" },
+            },
+          },
+          lualine_c = {
+            {
+              "filename",
+              path = 1, -- relative path
+              symbols = {
+                modified = "●",
+                readonly = "",
+                unnamed = "[No Name]",
+                newfile = "[New]",
+              },
+            },
+          },
+          lualine_x = {
+            {
+              "diagnostics",
+              sources = { "nvim_lsp" },
+              symbols = { error = "E:", warn = "W:", info = "I:", hint = "H:" },
+            },
+            lsp_clients,
+          },
+          lualine_y = {
+            "filetype",
+            {
+              "encoding",
+              cond = function()
+                return vim.bo.fileencoding ~= "utf-8"
+              end,
+            },
+            {
+              "fileformat",
+              symbols = {
+                unix = "LF",
+                dos = "CRLF",
+                mac = "CR",
+              },
+              cond = function()
+                return vim.bo.fileformat ~= "unix"
+              end,
+            },
+          },
+          lualine_z = { "progress", "location" },
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = {
+            {
+              "filename",
+              path = 1,
+            },
+          },
+          lualine_x = { "location" },
+          lualine_y = {},
+          lualine_z = {},
+        },
+        tabline = {},
+        winbar = {},
+        inactive_winbar = {},
+        extensions = { "nvim-tree", "lazy", "mason", "trouble", "nvim-dap-ui" },
+      }
     end,
   },
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = "nvim-tree/nvim-web-devicons",
+    cmd = { "NvimTreeToggle", "NvimTreeFocus", "NvimTreeFindFile", "NvimTreeCollapse" },
     opts = function()
       return require "configs.nvimtree"
     end,
