@@ -90,9 +90,6 @@ local sep = is_windows and "\\" or "/"
 local delim = is_windows and ";" or ":"
 vim.env.PATH = table.concat({ vim.fn.stdpath "data", "mason", "bin" }, sep) .. delim .. vim.env.PATH
 
--- winbar with navic breadcrumbs (replaced by barbecue.nvim)
--- vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
-
 -- Diagnostics configuration
 vim.diagnostic.config {
   virtual_text = {

@@ -11,11 +11,9 @@ map("i", "<C-k>", "<Up>", { desc = "move up" })
 -- Quick escape
 map("i", "jk", "<ESC>")
 map("i", "<C-CR>", function()
-        local enter = require("scripts.smart_enter")
-        enter.EnterInsideQuotes()
-      end,
-  {desc = "Magic enter"}
-)
+  local enter = require("scripts.smart_enter")
+  enter.enter_inside_quotes()
+end, { desc = "Magic enter" })
 
 -- Normal mode
 
@@ -188,7 +186,7 @@ map("n", "<leader>t5", "5gt", { desc = "Go to tab 5" })
 -- Terminal
 map("t", "<C-x>", "<C-\\><C-N>", { desc = "escape terminal mode" })
 
--- Terminal splits (like nvchad.term)
+-- Terminal splits
 map({ "n", "t" }, "<A-h>", function()
   require("utils.terminal").horizontal()
 end, { desc = "terminal horizontal split" })

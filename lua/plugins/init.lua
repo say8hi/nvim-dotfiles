@@ -225,7 +225,7 @@ return {
       return require "configs.nvimtree"
     end,
   },
-  -- disable nvchad's default cmp
+  -- disable default cmp (using blink.cmp instead)
   {
     "hrsh7th/nvim-cmp",
     enabled = false,
