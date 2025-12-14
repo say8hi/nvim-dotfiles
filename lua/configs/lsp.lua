@@ -164,7 +164,13 @@ vim.lsp.config.cssls = make_config(
   { ".git" }
 )
 
-local servers = { "gopls", "ruff", "pyright", "jsonls", "ts_ls", "html", "cssls" }
+vim.lsp.config.sqls = make_config(
+  { "sqls" },
+  { "sql", "mysql", "plsql" },
+  { ".git" }
+)
+
+local servers = { "gopls", "ruff", "pyright", "jsonls", "ts_ls", "html", "cssls", "sqls" }
 for _, server in ipairs(servers) do
   vim.lsp.enable(server)
 end

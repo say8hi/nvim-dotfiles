@@ -82,23 +82,6 @@ return {
     event = "BufWritePre", -- uncomment for format on save
     opts = require "configs.conform",
   },
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      local lint = require "lint"
-      lint.linters_by_ft = {
-        sql = { "sqlfluff" },
-      }
-
-      -- auto-lint on save and text change
-      vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "TextChanged" }, {
-        callback = function()
-          require("lint").try_lint()
-        end,
-      })
-    end,
-  },
 
   {
     "nvim-neotest/nvim-nio",
@@ -144,6 +127,8 @@ return {
   },
   {
     "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUpdate" },
+    build = ":MasonUpdate",
     opts = {
       ensure_installed = {
         "gopls",
@@ -160,7 +145,7 @@ return {
         "goimports-reviser",
         "golines",
         "black",
-        "sqlfluff",
+        "sqls",
       },
     },
   },
