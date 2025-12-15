@@ -65,6 +65,11 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
     local bufnr = args.buf
     -- Only setup gitsigns mappings if gitsigns is loaded
     vim.schedule(function()
+      -- Check if buffer is still valid before setting keymaps
+      if not vim.api.nvim_buf_is_valid(bufnr) then
+        return
+      end
+
       if package.loaded.gitsigns then
         local gs = package.loaded.gitsigns
         local function git_map(mode, lhs, rhs, desc)
