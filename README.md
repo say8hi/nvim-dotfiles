@@ -104,7 +104,7 @@ This will install all configured LSP servers, formatters, and linters:
 - typescript-language-server, prettier (TypeScript/JavaScript)
 - html-lsp, css-lsp, json-lsp (Web)
 - sqls (SQL)
-- stylua (Lua)
+- lua-language-server, stylua (Lua)
 
 ## Configuration Structure
 

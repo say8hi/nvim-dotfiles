@@ -170,7 +170,33 @@ vim.lsp.config.sqls = make_config(
   { ".git" }
 )
 
-local servers = { "gopls", "ruff", "pyright", "jsonls", "ts_ls", "html", "cssls", "sqls" }
+vim.lsp.config.lua_ls = make_config(
+  { "lua-language-server" },
+  { "lua" },
+  { ".git", ".luarc.json", ".stylua.toml" },
+  {
+    Lua = {
+      runtime = {
+        version = "LuaJIT",
+      },
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        library = {
+          vim.env.VIMRUNTIME,
+          "${3rd}/luv/library",
+        },
+        checkThirdParty = false,
+      },
+      telemetry = {
+        enable = false,
+      },
+    },
+  }
+)
+
+local servers = { "gopls", "ruff", "pyright", "jsonls", "ts_ls", "html", "cssls", "sqls", "lua_ls" }
 for _, server in ipairs(servers) do
   vim.lsp.enable(server)
 end
