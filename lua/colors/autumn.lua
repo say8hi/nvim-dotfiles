@@ -4,21 +4,21 @@ local base16 = require('mini.base16')
 
 -- Base16 palette from matugen
 local palette = {
-  base00 = '#131313', -- background
-  base01 = '#131313', -- lighter background
-  base02 = '#131313', -- selection
-  base03 = '#474747', -- comments, line numbers
-  base04 = '#c6c6c6', -- dark foreground
-  base05 = '#e2e2e2', -- foreground
-  base06 = '#efefef', -- light foreground
-  base07 = '#fcfcfc', -- lightest
+  base00 = '#151310', -- background
+  base01 = '#151310', -- lighter background
+  base02 = '#151310', -- selection
+  base03 = '#4e453c', -- comments, line numbers
+  base04 = '#d1c4b8', -- dark foreground
+  base05 = '#e8e1dc', -- foreground
+  base06 = '#f2eeeb', -- light foreground
+  base07 = '#fcfbfb', -- lightest
   base08 = '#ffb4ab', -- red (variables, errors)
-  base09 = '#adadad', -- orange
-  base0A = '#c6c6c6', -- yellow
-  base0B = '#e2e2e2', -- green (strings)
-  base0C = '#5e5e5e', -- cyan (operators)
-  base0D = '#ffffff', -- blue (functions)
-  base0E = '#5e5e5e', -- purple (keywords)
+  base09 = '#c5ab8d', -- orange
+  base0A = '#d6c4af', -- yellow
+  base0B = '#c3cb9f', -- green (strings)
+  base0C = '#ffddb3', -- cyan (operators)
+  base0D = '#e3c197', -- blue (functions)
+  base0E = '#e0e7ba', -- purple (keywords)
   base0F = '#ffcbc5', -- brown
 }
 
@@ -35,21 +35,21 @@ vim.g.colors_name = 'matugen'
 
 -- Custom highlight colors
 local colors = {
-  white = '#e2e2e2',
-  darker_black = '#1f1f1f',
-  black = '#121212',
-  black2 = '#131313',
-  one_bg = '#131313',
-  grey = '#474747',
+  white = '#e8e1dc',
+  darker_black = '#221f1c',
+  black = '#141210',
+  black2 = '#151310',
+  one_bg = '#151310',
+  grey = '#4e453c',
   red = '#ffb4ab',
-  pink = '#5e5e5e',
-  green = '#e2e2e2',
-  blue = '#ffffff',
-  orange = '#adadad',
-  cyan = '#6b6b6b',
-  teal = '#5e5e5e',
-  purple = '#515151',
-  lavender = '#787878',
+  pink = '#e0e7ba',
+  green = '#c3cb9f',
+  blue = '#e3c197',
+  orange = '#c5ab8d',
+  cyan = '#ffe8cd',
+  teal = '#ffddb3',
+  purple = '#d8e0a7',
+  lavender = '#fff4e6',
 }
 
 local function apply_custom_highlights()
