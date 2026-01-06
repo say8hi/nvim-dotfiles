@@ -10,6 +10,7 @@ local options = {
     yaml = { "prettier" },
     markdown = { "prettier" },
     lua = { "stylua" },
+    rust = { "rustfmt" },
     -- sql formatting will use LSP (sqls) via lsp_fallback
   },
   formatters = {
